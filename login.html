@@ -121,26 +121,25 @@
             }
         }
 
-        // Predefined users with more detailed structure
+        // Simple user authentication data
         const users = [
             { 
                 email: 'user@specyf.com', 
                 password: 'password123', 
-                name: 'John Doe',
-                role: 'user'
+                name: 'John Doe'
             },
             { 
                 email: 'admin@specyf.com', 
                 password: 'admin123', 
-                name: 'Admin User',
-                role: 'admin'
+                name: 'Admin User'
             }
         ];
 
-        // Enhanced validation function
+        // Simplified login validation
         function validateLogin(event) {
             event.preventDefault();
             
+            // Get input values
             const emailInput = document.getElementById('email');
             const passwordInput = document.getElementById('password');
             const errorMessage = document.getElementById('error-message');
@@ -150,81 +149,49 @@
             emailInput.classList.remove('error');
             passwordInput.classList.remove('error');
             
+            // Trim and convert email to lowercase
             const email = emailInput.value.trim().toLowerCase();
             const password = passwordInput.value;
             
-            // Comprehensive validation
-            if (!email) {
-                errorMessage.textContent = 'Email is required';
-                emailInput.classList.add('error');
+            // Basic validation
+            if (!email || !password) {
+                errorMessage.textContent = 'Please enter both email and password';
                 return;
             }
             
-            if (!password) {
-                errorMessage.textContent = 'Password is required';
-                passwordInput.classList.add('error');
-                return;
-            }
-            
-            // Email format validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                errorMessage.textContent = 'Invalid email format';
-                emailInput.classList.add('error');
-                return;
-            }
-            
-            // Find user with strict matching
+            // Find user with case-insensitive email match
             const user = users.find(u => 
                 u.email.toLowerCase() === email && 
                 u.password === password
             );
             
             if (user) {
-                // Store comprehensive user data
+                // Store user data in localStorage
                 localStorage.setItem('userData', JSON.stringify({
                     name: user.name,
-                    email: user.email,
-                    role: user.role,
-                    loginTimestamp: Date.now()
+                    email: user.email
                 }));
                 
-                // Generate a more secure token
-                const token = btoa(JSON.stringify({
-                    email: user.email,
-                    expiry: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
-                }));
-                localStorage.setItem('userToken', token);
+                // Create a simple authentication token
+                localStorage.setItem('userToken', 'logged_in_' + Date.now());
                 
-                // Redirect based on user role
-                window.location.href = user.role === 'admin' 
-                    ? 'dashboard/admin-dashboard.html' 
-                    : 'dashboard/index.html';
+                // Redirect to dashboard
+                // Modify this line to match your actual dashboard path
+                window.location.href = 'dashboard/index.html';
             } else {
+                // Show error for invalid credentials
                 errorMessage.textContent = 'Invalid email or password';
                 emailInput.classList.add('error');
                 passwordInput.classList.add('error');
             }
         }
-        
-        // Check if user is already logged in on page load
+
+        // Check for existing login on page load
         document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('userToken');
-            if (token) {
-                try {
-                    const tokenData = JSON.parse(atob(token));
-                    if (tokenData.expiry > Date.now()) {
-                        // Token is valid, redirect to dashboard
-                        const userData = JSON.parse(localStorage.getItem('userData'));
-                        window.location.href = userData.role === 'admin' 
-                            ? 'dashboard/admin-dashboard.html' 
-                            : 'dashboard/index.html';
-                    }
-                } catch (error) {
-                    // Invalid token, clear storage
-                    localStorage.removeItem('userToken');
-                    localStorage.removeItem('userData');
-                }
+            const userToken = localStorage.getItem('userToken');
+            if (userToken) {
+                // If token exists, redirect to dashboard
+                window.location.href = 'dashboard/index.html';
             }
         });
         
