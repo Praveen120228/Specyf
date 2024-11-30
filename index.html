@@ -119,5 +119,14 @@
     </footer>
 
     <script src="js/script.js"></script>
+    <script>
+        // Check if user is logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            const userToken = localStorage.getItem('userToken');
+            if (!userToken) {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
 </body>
 </html>
