@@ -121,21 +121,7 @@
             }
         }
 
-        // Simple user authentication data
-        const users = [
-            { 
-                email: 'user@specyf.com', 
-                password: 'password123', 
-                name: 'John Doe'
-            },
-            { 
-                email: 'admin@specyf.com', 
-                password: 'admin123', 
-                name: 'Admin User'
-            }
-        ];
-
-        // Simplified login validation
+        // Login validation
         function validateLogin(event) {
             event.preventDefault();
             
@@ -151,20 +137,18 @@
             
             // Get input values and trim whitespace
             const email = emailInput.value.trim().toLowerCase();
-            const password = passwordInput.value.trim();
+            const password = passwordInput.value;
             
-            // Debug logging
-            console.log('Attempting login with:', { email, password });
+            // Get registered users
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
             
             // Find user
-            const user = users.find(u => {
-                const match = u.email.toLowerCase() === email && u.password === password;
-                console.log('Checking user:', u.email, 'Match:', match);
-                return match;
-            });
+            const user = users.find(u => 
+                u.email.toLowerCase() === email && 
+                u.password === password
+            );
             
             if (user) {
-                console.log('Login successful:', user.name);
                 // Store user data in localStorage
                 localStorage.setItem('userData', JSON.stringify({
                     name: user.name,
@@ -177,7 +161,6 @@
                 // Redirect to dashboard
                 window.location.href = './dashboard/index.html';
             } else {
-                console.log('Login failed');
                 // Show error for invalid credentials
                 errorMessage.textContent = 'Invalid email or password';
                 emailInput.classList.add('error');

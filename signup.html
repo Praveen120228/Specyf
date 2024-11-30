@@ -157,8 +157,8 @@
             // Reset error messages
             document.querySelectorAll('.error-message').forEach(msg => msg.textContent = '');
             
-            const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('email').value;
+            const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             const terms = document.getElementById('terms').checked;
@@ -182,6 +182,13 @@
                 isValid = false;
             }
 
+            // Check if email already exists
+            const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            if (existingUsers.some(user => user.email.toLowerCase() === email)) {
+                document.getElementById('email-error').textContent = 'Email already registered';
+                isValid = false;
+            }
+
             // Password validation
             if (!password) {
                 document.getElementById('password-error').textContent = 'Password is required';
@@ -202,17 +209,35 @@
 
             // Terms validation
             if (!terms) {
-                document.getElementById('terms-error').textContent = 'You must agree to the Terms & Conditions';
+                document.getElementById('terms-error').textContent = 'Please accept the terms and conditions';
                 isValid = false;
             }
 
             if (isValid) {
-                // Here you would typically make an API call to your backend
-                console.log('Signup attempt:', { fullname, email, password });
-                // For demo purposes, show success message
+                // Create new user object
+                const newUser = {
+                    name: fullname,
+                    email: email,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Add user to storage
+                existingUsers.push(newUser);
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+
+                // Auto login the user
+                localStorage.setItem('userData', JSON.stringify({
+                    name: newUser.name,
+                    email: newUser.email
+                }));
+                localStorage.setItem('userToken', 'logged_in_' + Date.now());
+
+                // Show success message
                 alert('Account created successfully!');
-                // Redirect to login page
-                window.location.href = 'login.html';
+
+                // Redirect to dashboard
+                window.location.href = './dashboard/index.html';
             }
         }
 
