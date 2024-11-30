@@ -149,23 +149,22 @@
             emailInput.classList.remove('error');
             passwordInput.classList.remove('error');
             
-            // Trim and convert email to lowercase
+            // Get input values and trim whitespace
             const email = emailInput.value.trim().toLowerCase();
-            const password = passwordInput.value;
+            const password = passwordInput.value.trim();
             
-            // Basic validation
-            if (!email || !password) {
-                errorMessage.textContent = 'Please enter both email and password';
-                return;
-            }
+            // Debug logging
+            console.log('Attempting login with:', { email, password });
             
-            // Find user with case-insensitive email match
-            const user = users.find(u => 
-                u.email.toLowerCase() === email && 
-                u.password === password
-            );
+            // Find user
+            const user = users.find(u => {
+                const match = u.email.toLowerCase() === email && u.password === password;
+                console.log('Checking user:', u.email, 'Match:', match);
+                return match;
+            });
             
             if (user) {
+                console.log('Login successful:', user.name);
                 // Store user data in localStorage
                 localStorage.setItem('userData', JSON.stringify({
                     name: user.name,
@@ -178,6 +177,7 @@
                 // Redirect to dashboard
                 window.location.href = './dashboard/index.html';
             } else {
+                console.log('Login failed');
                 // Show error for invalid credentials
                 errorMessage.textContent = 'Invalid email or password';
                 emailInput.classList.add('error');
