@@ -69,17 +69,7 @@
             <div class="contact-form-container">
                 <h2>Send us a Message</h2>
                 <form id="contactForm" class="contact-form" action="https://formsubmit.co/specyf.contact@gmail.com" method="POST">
-                    <!-- Honeypot -->
-                    <input type="text" name="_honey" style="display: none;">
-                    <!-- Disable Captcha -->
-                    <input type="hidden" name="_captcha" value="false">
-                    <!-- Success Page -->
                     <input type="hidden" name="_next" value="https://praveen120228.github.io/Specyf/thanks.html">
-                    <!-- Remove FormSubmit branding -->
-                    <input type="hidden" name="_template" value="table">
-                    <!-- Set website URL -->
-                    <input type="hidden" name="_url" value="https://praveen120228.github.io/Specyf/contact.html">
-
                     <div class="form-group">
                         <label for="name">Full Name *</label>
                         <input type="text" id="name" name="name" required>
@@ -227,9 +217,8 @@
             }
             
             if (isValid) {
-                // Show success message
-                alert('Thank you for your message! We will get back to you soon.');
-                document.getElementById('contactForm').reset();
+                // Allow form submission
+                document.getElementById('contactForm').submit();
             }
             
             return false;
