@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs - Specyf Admin</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Sidebar -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <img src="../assets/logo.png" alt="Specyf Logo">
+                <h1>Specyf Admin</h1>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="companies.html" class="nav-item">
+                    <i class="fas fa-building"></i>
+                    <span>Companies</span>
+                </a>
+                <a href="jobs.html" class="nav-item active">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Jobs</span>
+                </a>
+                <a href="candidates.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Candidates</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+
+            <div class="nav-profile">
+                <img src="../assets/avatar.jpg" alt="Admin Profile" class="avatar">
+                <div class="profile-info">
+                    <h3>Admin</h3>
+                    <p>Super Admin</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <div class="header-left">
+                    <h1>Jobs</h1>
+                    <p class="date-text"></p>
+                </div>
+                <div class="header-right">
+                    <button class="btn-primary" id="addJobBtn">
+                        <i class="fas fa-plus"></i> Post New Job
+                    </button>
+                </div>
+            </div>
+
+            <!-- Jobs Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active Jobs</h3>
+                        <p class="stat-value" id="activeJobs">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Applications</h3>
+                        <p class="stat-value" id="totalApplications">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Avg. Time to Hire</h3>
+                        <p class="stat-value" id="avgTimeToHire">0 days</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Positions Filled</h3>
+                        <p class="stat-value" id="positionsFilled">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Filter and Search -->
+            <div class="filter-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="jobSearch" placeholder="Search jobs...">
+                </div>
+                <div class="filter-group">
+                    <select id="companyFilter">
+                        <option value="">All Companies</option>
+                    </select>
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="hr">HR</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                    <select id="experienceFilter">
+                        <option value="">All Experience Levels</option>
+                        <option value="entry">Entry Level</option>
+                        <option value="mid">Mid Level</option>
+                        <option value="senior">Senior Level</option>
+                        <option value="executive">Executive</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="paused">Paused</option>
+                        <option value="filled">Filled</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Jobs Table -->
+            <div class="table-container">
+                <table class="data-table" id="jobsTable">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Applications</th>
+                            <th>Posted Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobsTableBody">
+                        <!-- Table content will be populated by JavaScript -->
+                    </tbody>
+                </table>
+                <div class="table-pagination">
+                    <button id="prevPage" class="btn-secondary"><i class="fas fa-chevron-left"></i></button>
+                    <span id="currentPage">Page 1 of 1</span>
+                    <button id="nextPage" class="btn-secondary"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Job Modal -->
+    <div class="modal" id="addJobModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Post New Job</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addJobForm">
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <select name="company" required>
+                        <option value="">Select Company</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select name="department" required>
+                        <option value="">Select Department</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="hr">HR</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label>Employment Type</label>
+                    <select name="employmentType" required>
+                        <option value="">Select Type</option>
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="contract">Contract</option>
+                        <option value="internship">Internship</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Experience Level</label>
+                    <select name="experienceLevel" required>
+                        <option value="">Select Level</option>
+                        <option value="entry">Entry Level</option>
+                        <option value="mid">Mid Level</option>
+                        <option value="senior">Senior Level</option>
+                        <option value="executive">Executive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Salary Range</label>
+                    <div class="salary-range">
+                        <input type="number" name="salaryMin" placeholder="Min" required>
+                        <span>to</span>
+                        <input type="number" name="salaryMax" placeholder="Max" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Job Description</label>
+                    <textarea name="description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Requirements</label>
+                    <textarea name="requirements" rows="4" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Post Job</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script src="jobs.js"></script>
+</body>
+</html>
