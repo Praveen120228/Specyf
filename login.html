@@ -37,14 +37,14 @@
                         <p>Welcome back! Please enter your credentials.</p>
                     </div>
 
-                    <form id="login-form" class="auth-form" onsubmit="return handleLogin(event)">
+                    <form id="loginForm" class="auth-form">
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <div class="input-group">
                                 <i class="fas fa-envelope"></i>
                                 <input type="email" id="email" name="email" required>
                             </div>
-                            <span class="error-message" id="email-error"></span>
+                            <span class="error-message" id="error-message"></span>
                         </div>
 
                         <div class="form-group">
@@ -54,7 +54,6 @@
                                 <input type="password" id="password" name="password" required minlength="6">
                                 <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
                             </div>
-                            <span class="error-message" id="password-error"></span>
                         </div>
 
                         <div class="form-group remember-forgot">
@@ -122,50 +121,55 @@
             }
         }
 
-        // Handle login form submission
-        function handleLogin(event) {
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const userToken = localStorage.getItem('userToken');
+            if (userToken) {
+                // Redirect to dashboard if already logged in
+                window.location.href = 'dashboard/index.html';
+            }
+        });
+
+        function validateLogin(event) {
             event.preventDefault();
             
-            // Reset error messages
-            document.querySelectorAll('.error-message').forEach(msg => msg.textContent = '');
-            
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            let isValid = true;
-
-            // Email validation
-            if (!email) {
-                document.getElementById('email-error').textContent = 'Email is required';
-                isValid = false;
-            } else if (!isValidEmail(email)) {
-                document.getElementById('email-error').textContent = 'Please enter a valid email';
-                isValid = false;
+            const errorMessage = document.getElementById('error-message');
+            
+            // Basic validation
+            if (!email || !password) {
+                errorMessage.textContent = 'Please enter both email and password';
+                return;
             }
-
-            // Password validation
-            if (!password) {
-                document.getElementById('password-error').textContent = 'Password is required';
-                isValid = false;
-            } else if (password.length < 6) {
-                document.getElementById('password-error').textContent = 'Password must be at least 6 characters';
-                isValid = false;
-            }
-
-            if (isValid) {
-                // Here you would typically make an API call to your backend
-                console.log('Login attempt:', { email, password });
-                // For demo purposes, show success message
-                alert('Login successful!');
-                // Redirect to dashboard or home page
-                window.location.href = 'index.html';
+            
+            // Simulated login (replace with actual backend authentication)
+            const users = [
+                { email: 'user@specyf.com', password: 'password123', name: 'John Doe' },
+                { email: 'admin@specyf.com', password: 'admin123', name: 'Admin User' }
+            ];
+            
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Store user data in localStorage
+                localStorage.setItem('userData', JSON.stringify({
+                    name: user.name,
+                    email: user.email
+                }));
+                
+                // Store authentication token (simulated)
+                localStorage.setItem('userToken', 'simulated-auth-token-' + Date.now());
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard/index.html';
+            } else {
+                errorMessage.textContent = 'Invalid email or password';
             }
         }
-
-        // Email validation helper
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
+        
+        // Add event listener to login form
+        document.getElementById('loginForm').addEventListener('submit', validateLogin);
     </script>
 </body>
 </html>
