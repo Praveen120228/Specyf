@@ -176,8 +176,7 @@
                 localStorage.setItem('userToken', 'logged_in_' + Date.now());
                 
                 // Redirect to dashboard
-                // Modify this line to match your actual dashboard path
-                window.location.href = 'dashboard/index.html';
+                window.location.href = './dashboard/index.html';
             } else {
                 // Show error for invalid credentials
                 errorMessage.textContent = 'Invalid email or password';
@@ -191,7 +190,7 @@
             const userToken = localStorage.getItem('userToken');
             if (userToken) {
                 // If token exists, redirect to dashboard
-                window.location.href = 'dashboard/index.html';
+                window.location.href = './dashboard/index.html';
             }
         });
         
