@@ -54,10 +54,48 @@
     </div>
 
     <script type="module">
-        import { handleLoginSubmission } from './js/auth-config.js';
-        
-        const loginForm = document.getElementById('login-form');
-        loginForm.addEventListener('submit', handleLoginSubmission);
+        import authService from './js/auth-service.js';
+
+        // Handle form submission
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginError = document.getElementById('login-error');
+
+            try {
+                // Clear previous errors
+                loginError.textContent = '';
+                
+                // Validate email format
+                if (!emailInput.value || !emailInput.value.includes('@')) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                // Validate password
+                if (!passwordInput.value || passwordInput.value.length < 8) {
+                    throw new Error('Password must be at least 8 characters');
+                }
+
+                // Attempt login
+                await authService.signIn(emailInput.value, passwordInput.value);
+                // Auth service will handle redirection
+
+            } catch (error) {
+                loginError.textContent = error.message;
+                loginError.style.display = 'block';
+                console.error('Login error:', error);
+            }
+        }
+
+        // Setup form handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+        });
     </script>
 </body>
 </html>

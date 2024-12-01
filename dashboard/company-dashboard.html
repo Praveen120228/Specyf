@@ -47,45 +47,47 @@
     </main>
 
     <script type="module">
-        import { AuthService } from '../js/auth-config.js';
+        import authService from '../js/auth-service.js';
 
-        // Check authentication state
-        async function loadDashboard() {
+        async function initializeDashboard() {
             try {
-                // Get current user
-                const currentUser = AuthService.getCurrentUser();
-
-                if (!currentUser) {
-                    // Redirect to login if no user is logged in
-                    window.location.href = '../login.html';
+                // Get current user data
+                const userData = await authService.getCurrentUserData();
+                if (!userData) {
+                    console.error('No user data found');
                     return;
                 }
 
-                // Populate company details
-                document.getElementById('company-name').textContent = currentUser.companyName || 'Company';
-                document.getElementById('total-candidates').textContent = '0'; // Placeholder
-                document.getElementById('open-positions').textContent = '0'; // Placeholder
-                document.getElementById('profile-views').textContent = '0'; // Placeholder
+                // Update UI with user data
+                document.getElementById('company-name').textContent = userData.fullName || 'Company';
+                document.getElementById('user-email').textContent = userData.email;
+                document.getElementById('profile-email').textContent = userData.email;
+                document.getElementById('profile-name').textContent = userData.fullName;
+                document.getElementById('profile-type').textContent = 
+                    userData.userType.charAt(0).toUpperCase() + userData.userType.slice(1);
+
             } catch (error) {
-                console.error('Dashboard load error:', error);
-                window.location.href = '../login.html';
+                console.error('Dashboard initialization error:', error);
+                alert('Error loading dashboard. Please try logging in again.');
             }
         }
 
-        // Logout functionality
+        // Setup logout functionality
         function setupLogout() {
             const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', () => {
-                    AuthService.logout();
-                    window.location.href = '../login.html';
-                });
-            }
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await authService.signOut();
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Error during logout. Please try again.');
+                }
+            });
         }
 
-        // Load dashboard when page loads
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            loadDashboard();
+            initializeDashboard();
             setupLogout();
         });
     </script>

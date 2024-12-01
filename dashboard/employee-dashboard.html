@@ -68,34 +68,28 @@
     </main>
 
     <script type="module">
-        import { AuthService } from '../js/dashboard-auth.js';
+        import authService from '../js/auth-service.js';
 
-        // Check authentication and load dashboard
         async function initializeDashboard() {
             try {
-                // Validate user has employee role
-                const isValid = await AuthService.validateAccess('employee');
-                if (!isValid) return;
-
                 // Get current user data
-                const user = await AuthService.getCurrentUser();
-                if (!user) {
-                    window.location.href = '/Specyf/login.html';
+                const userData = await authService.getCurrentUserData();
+                if (!userData) {
+                    console.error('No user data found');
                     return;
                 }
 
                 // Update UI with user data
-                document.getElementById('employee-name').textContent = user.fullName || 'Employee';
-                document.getElementById('user-email').textContent = user.email;
-                document.getElementById('profile-email').textContent = user.email;
-                document.getElementById('profile-name').textContent = user.fullName;
+                document.getElementById('employee-name').textContent = userData.fullName || 'Employee';
+                document.getElementById('user-email').textContent = userData.email;
+                document.getElementById('profile-email').textContent = userData.email;
+                document.getElementById('profile-name').textContent = userData.fullName;
                 document.getElementById('profile-type').textContent = 
-                    user.userType.charAt(0).toUpperCase() + user.userType.slice(1);
+                    userData.userType.charAt(0).toUpperCase() + userData.userType.slice(1);
 
             } catch (error) {
                 console.error('Dashboard initialization error:', error);
                 alert('Error loading dashboard. Please try logging in again.');
-                window.location.href = '/Specyf/login.html';
             }
         }
 
@@ -104,7 +98,7 @@
             const logoutButton = document.getElementById('logout-button');
             logoutButton.addEventListener('click', async () => {
                 try {
-                    await AuthService.logout();
+                    await authService.signOut();
                 } catch (error) {
                     console.error('Logout error:', error);
                     alert('Error during logout. Please try again.');

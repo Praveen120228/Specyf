@@ -110,10 +110,81 @@
     </div>
 
     <script type="module">
-        import { handleSignupSubmission } from './js/auth-config.js';
-        
-        const signupForm = document.getElementById('signup-form');
-        signupForm.addEventListener('submit', handleSignupSubmission);
+        import authService from './js/auth-service.js';
+
+        // Handle form submission
+        async function handleSignup(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const userTypeSelect = document.getElementById('user-type');
+            const fullNameInput = document.getElementById('full-name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const termsCheckbox = document.getElementById('terms');
+            const signupError = document.getElementById('signup-error');
+
+            try {
+                // Clear previous errors
+                signupError.textContent = '';
+
+                // Validate user type
+                if (!userTypeSelect.value) {
+                    throw new Error('Please select a user type');
+                }
+
+                // Validate full name
+                if (!fullNameInput.value || fullNameInput.value.trim().length < 2) {
+                    throw new Error('Please enter your full name (minimum 2 characters)');
+                }
+
+                // Validate email
+                if (!emailInput.value || !emailInput.value.includes('@')) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                // Validate password
+                if (!passwordInput.value || passwordInput.value.length < 8) {
+                    throw new Error('Password must be at least 8 characters');
+                }
+
+                // Validate password confirmation
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    throw new Error('Passwords do not match');
+                }
+
+                // Check terms agreement
+                if (!termsCheckbox.checked) {
+                    throw new Error('Please agree to the terms and conditions');
+                }
+
+                // Prepare user data
+                const userData = {
+                    userType: userTypeSelect.value,
+                    fullName: fullNameInput.value.trim(),
+                    email: emailInput.value,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Attempt signup
+                await authService.signUp(emailInput.value, passwordInput.value, userData);
+                // Auth service will handle redirection
+
+            } catch (error) {
+                signupError.textContent = error.message;
+                signupError.style.display = 'block';
+                console.error('Signup error:', error);
+            }
+        }
+
+        // Setup form handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm) {
+                signupForm.addEventListener('submit', handleSignup);
+            }
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -68,23 +68,46 @@
         </section>
     </main>
 
-    <script type="module" src="../js/auth-config.js"></script>
     <script type="module">
-        import { AuthService } from '../js/auth-config.js';
+        import authService from '../js/auth-service.js';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentUser = AuthService.getCurrentUser();
-            if (!currentUser) {
-                window.location.href = '../login.html';
+        async function initializeDashboard() {
+            try {
+                // Get current user data
+                const userData = await authService.getCurrentUserData();
+                if (!userData) {
+                    console.error('No user data found');
+                    return;
+                }
+
+                // Update UI with user data
+                document.getElementById('founder-name').textContent = userData.fullName || 'Startup';
+                document.getElementById('company-name').textContent = userData.companyName || 'Not Specified';
+                document.getElementById('industry').textContent = userData.industry || 'Not Specified';
+
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                alert('Error loading dashboard. Please try logging in again.');
             }
+        }
 
-            document.getElementById('founder-name').textContent = currentUser.fullName || currentUser.companyName;
-            document.getElementById('company-name').textContent = currentUser.companyName || 'Not Specified';
-            document.getElementById('industry').textContent = currentUser.industry || 'Not Specified';
-
-            document.getElementById('logout-button').addEventListener('click', () => {
-                AuthService.logout();
+        // Setup logout functionality
+        function setupLogout() {
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await authService.signOut();
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Error during logout. Please try again.');
+                }
             });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDashboard();
+            setupLogout();
         });
     </script>
 </body>
