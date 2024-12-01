@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - Specyf</title>
+    <title>Specyf - Contact Us</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -19,16 +19,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
-                <li class="services-dropdown">
-                    <a href="services.html">Services</a>
-                    <div class="dropdown-content">
-                        <a href="recruitment.html">Recruitment</a>
-                        <a href="staffing.html">Staffing Solutions</a>
-                        <a href="consulting.html">HR Consulting</a>
-                        <a href="training.html">Training</a>
-                        <a href="outsourcing.html">Outsourcing</a>
-                    </div>
-                </li>
+                <li><a href="services.html">Services</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
                 <li><a href="login.html">Login</a></li>
                 <li><a href="signup.html">Sign Up</a></li>
@@ -124,19 +115,16 @@
 
             <div class="footer-section">
                 <h3>Quick Links</h3>
-                <ul class="footer-links">
+                <ul>
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
                     <li><a href="services.html">Services</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
                 </ul>
             </div>
 
             <div class="footer-section">
                 <h3>Our Services</h3>
-                <ul class="footer-links">
+                <ul>
                     <li><a href="recruitment.html">Recruitment</a></li>
                     <li><a href="staffing.html">Staffing Solutions</a></li>
                     <li><a href="consulting.html">HR Consulting</a></li>
@@ -147,7 +135,7 @@
 
             <div class="footer-section">
                 <h3>Contact</h3>
-                <ul class="contact-info">
+                <ul>
                     <li>
                         <i class="fas fa-map-marker-alt"></i>
                         <a href="https://maps.google.com/?q=Rajahmundry,Andhra+Pradesh" target="_blank">
@@ -169,91 +157,7 @@
         </div>
     </footer>
 
-    <script>
-        // Hamburger menu functionality
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            document.querySelector('nav ul').classList.toggle('active');
-            this.classList.toggle('active');
-        });
-
-        // Services dropdown functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const servicesDropdown = document.querySelector('.services-dropdown');
-            
-            servicesDropdown.addEventListener('mouseover', function() {
-                this.querySelector('.dropdown-content').style.display = 'block';
-            });
-            
-            servicesDropdown.addEventListener('mouseout', function() {
-                this.querySelector('.dropdown-content').style.display = 'none';
-            });
-        });
-
-        function validateForm(event) {
-            event.preventDefault();
-            let isValid = true;
-            
-            // Reset error messages
-            document.querySelectorAll('.error-message').forEach(error => error.textContent = '');
-            
-            // Name validation
-            const name = document.getElementById('name').value.trim();
-            if (name.length < 2) {
-                document.getElementById('nameError').textContent = 'Name must be at least 2 characters long';
-                isValid = false;
-            }
-            
-            // Email validation
-            const email = document.getElementById('email').value.trim();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                document.getElementById('emailError').textContent = 'Please enter a valid email address';
-                isValid = false;
-            }
-            
-            // Subject validation
-            const subject = document.getElementById('subject').value.trim();
-            if (subject.length < 5) {
-                document.getElementById('subjectError').textContent = 'Subject must be at least 5 characters long';
-                isValid = false;
-            }
-            
-            // Message validation
-            const message = document.getElementById('message').value.trim();
-            if (message.length < 20) {
-                document.getElementById('messageError').textContent = 'Message must be at least 20 characters long';
-                isValid = false;
-            }
-            
-            if (isValid) {
-                // Prepare form data
-                const form = document.getElementById('contactForm');
-                const formData = new FormData(form);
-                
-                // Send AJAX request
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Redirect to thanks page
-                        window.location.href = 'https://praveen120228.github.io/Specyf/thanks.html';
-                    } else {
-                        throw new Error('Form submission failed');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('There was a problem sending your message. Please try again.');
-                });
-            }
-            
-            return false;
-        }
-    </script>
+    <script src="js/script.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

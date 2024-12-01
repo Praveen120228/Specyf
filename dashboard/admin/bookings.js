@@ -1,6 +1,31 @@
-// Bookings JavaScript
+// Initialize Firebase
+let db;
+let auth;
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    auth = firebase.auth();
+
+    // Check authentication
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            loadBookings();
+            loadStats();
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
     // DOM Elements
     const notificationPanel = document.querySelector('.notification-panel');
     const notificationBell = document.querySelector('.notification-bell');
@@ -30,6 +55,134 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle Notification Panel
     function toggleNotificationPanel() {
         notificationPanel.classList.toggle('active');
+    }
+
+    // Load booking statistics
+    async function loadStats() {
+        try {
+            const bookingsSnapshot = await db.collection('bookings').get();
+            const staffSnapshot = await db.collection('staff').get();
+
+            let activeCount = 0;
+            let pendingCount = 0;
+
+            bookingsSnapshot.forEach(doc => {
+                const booking = doc.data();
+                if (booking.status === 'active') activeCount++;
+                if (booking.status === 'pending') pendingCount++;
+            });
+
+            document.getElementById('activeCompanies').textContent = activeCount;
+            document.getElementById('pendingRequests').textContent = pendingCount;
+            document.getElementById('totalStaff').textContent = staffSnapshot.size;
+        } catch (error) {
+            console.error("Error loading stats:", error);
+            showNotification('Error loading statistics', 'error');
+        }
+    }
+
+    // Load bookings
+    async function loadBookings() {
+        try {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const tableBody = document.getElementById('bookingsTableBody');
+            tableBody.innerHTML = '';
+
+            let query = db.collection('bookings');
+            if (statusFilter !== 'all') {
+                query = query.where('status', '==', statusFilter);
+            }
+
+            const snapshot = await query.get();
+            
+            snapshot.forEach(doc => {
+                const booking = doc.data();
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.companyName}</td>
+                    <td>${booking.serviceType}</td>
+                    <td>${booking.staffRequired}</td>
+                    <td>${new Date(booking.startDate).toLocaleDateString()}</td>
+                    <td>${booking.duration}</td>
+                    <td><span class="status-badge ${booking.status}">${booking.status}</span></td>
+                    <td>
+                        <button onclick="viewBooking('${doc.id}')" class="btn-icon">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editBooking('${doc.id}')" class="btn-icon">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteBooking('${doc.id}')" class="btn-icon">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error loading bookings:", error);
+            showNotification('Error loading bookings', 'error');
+        }
+    }
+
+    // Filter bookings
+    document.getElementById('statusFilter').addEventListener('change', loadBookings);
+
+    // Open new booking modal
+    function openNewBookingModal() {
+        // Implement modal functionality
+        console.log('Opening new booking modal');
+    }
+
+    // View booking details
+    async function viewBooking(bookingId) {
+        try {
+            const doc = await db.collection('bookings').doc(bookingId).get();
+            if (doc.exists) {
+                const booking = doc.data();
+                // Implement view modal
+                console.log('Viewing booking:', booking);
+            }
+        } catch (error) {
+            console.error("Error viewing booking:", error);
+            showNotification('Error viewing booking details', 'error');
+        }
+    }
+
+    // Edit booking
+    async function editBooking(bookingId) {
+        try {
+            const doc = await db.collection('bookings').doc(bookingId).get();
+            if (doc.exists) {
+                const booking = doc.data();
+                // Implement edit modal
+                console.log('Editing booking:', booking);
+            }
+        } catch (error) {
+            console.error("Error editing booking:", error);
+            showNotification('Error editing booking', 'error');
+        }
+    }
+
+    // Delete booking
+    async function deleteBooking(bookingId) {
+        if (confirm('Are you sure you want to delete this booking?')) {
+            try {
+                await db.collection('bookings').doc(bookingId).delete();
+                showNotification('Booking deleted successfully', 'success');
+                loadBookings();
+                loadStats();
+            } catch (error) {
+                console.error("Error deleting booking:", error);
+                showNotification('Error deleting booking', 'error');
+            }
+        }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+        // Implement notification system
+        console.log(`${type}: ${message}`);
     }
 
     // Mock Data
