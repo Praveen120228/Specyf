@@ -190,6 +190,8 @@ class AuthService {
     navigateToDashboard() {
         console.log('[NAV] Attempting to navigate to dashboard');
         console.log('[NAV] Current user type:', this.userType);
+        console.log('[NAV] Current base URL:', getBaseUrl());
+        console.log('[NAV] Full AUTH_PATHS:', JSON.stringify(AUTH_PATHS, null, 2));
         
         if (!this.userType) {
             console.error('[NAV] No user type found, redirecting to login');
@@ -201,7 +203,27 @@ class AuthService {
         
         if (dashboardPath) {
             console.log(`[NAV] Redirecting to ${dashboardPath}`);
-            window.location.href = dashboardPath;
+            
+            // Add error handling for navigation
+            try {
+                // Verify dashboard file exists before redirecting
+                fetch(dashboardPath)
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = dashboardPath;
+                        } else {
+                            console.error(`[NAV] Dashboard file not found: ${dashboardPath}`);
+                            window.location.href = AUTH_PATHS.login;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('[NAV] Navigation error:', error);
+                        window.location.href = AUTH_PATHS.login;
+                    });
+            } catch (error) {
+                console.error('[NAV] Unexpected navigation error:', error);
+                window.location.href = AUTH_PATHS.login;
+            }
         } else {
             console.error('[NAV] No dashboard path found for user type:', this.userType);
             window.location.href = AUTH_PATHS.login;
