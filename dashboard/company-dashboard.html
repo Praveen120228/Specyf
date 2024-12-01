@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Dashboard - Specyf</title>
+    <link rel="stylesheet" href="../css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Specyf Company Dashboard</div>
+            <div id="user-profile">
+                <button id="logout-button">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="dashboard-overview">
+            <h1>Welcome, <span id="company-name"></span></h1>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Total Candidates</h3>
+                    <p id="total-candidates">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Open Positions</h3>
+                    <p id="open-positions">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Profile Views</h3>
+                    <p id="profile-views">0</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div id="activity-feed"></div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { AuthService } from '../js/auth-config.js';
+
+        // Check authentication state
+        async function loadDashboard() {
+            try {
+                // Get current user
+                const currentUser = AuthService.getCurrentUser();
+
+                if (!currentUser) {
+                    // Redirect to login if no user is logged in
+                    window.location.href = '../login.html';
+                    return;
+                }
+
+                // Populate company details
+                document.getElementById('company-name').textContent = currentUser.companyName || 'Company';
+                document.getElementById('total-candidates').textContent = '0'; // Placeholder
+                document.getElementById('open-positions').textContent = '0'; // Placeholder
+                document.getElementById('profile-views').textContent = '0'; // Placeholder
+            } catch (error) {
+                console.error('Dashboard load error:', error);
+                window.location.href = '../login.html';
+            }
+        }
+
+        // Logout functionality
+        function setupLogout() {
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    AuthService.logout();
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+
+        // Load dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            setupLogout();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Enrollment - Specyf</title>
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .enrollment-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .skill-tag {
+            background-color: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .skill-tag .remove-skill {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section (same as index.html) -->
+    <header>
+        <nav>
+            <div class="logo">Specyf</div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="company-enrollment.html">Company Enrollment</a></li>
+                <li><a href="employee-enrollment.html" class="active">Employee Enrollment</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="enrollment-container">
+            <h1>Employee Enrollment</h1>
+            <p>Join Specyf and discover exciting career opportunities.</p>
+            
+            <form id="employee-enrollment-form">
+                <div class="form-group">
+                    <label for="full-name">Full Name *</label>
+                    <input type="text" id="full-name" name="full-name" required>
+                    <div class="error-message" id="full-name-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <div class="error-message" id="phone-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age *</label>
+                    <input type="number" id="age" name="age" min="18" max="65" required>
+                    <div class="error-message" id="age-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="education">Highest Education *</label>
+                    <select id="education" name="education" required>
+                        <option value="">Select Education Level</option>
+                        <option value="high-school">High School</option>
+                        <option value="bachelors">Bachelor's Degree</option>
+                        <option value="masters">Master's Degree</option>
+                        <option value="phd">PhD</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="education-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="industry">Preferred Industry *</label>
+                    <select id="industry" name="industry" required>
+                        <option value="">Select Industry</option>
+                        <option value="it">Information Technology</option>
+                        <option value="finance">Finance & Banking</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="education">Education</option>
+                        <option value="retail">Retail</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="industry-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="skills">Skills *</label>
+                    <input type="text" id="skills-input" placeholder="Add skills (Press Enter to add)">
+                    <div id="skills-container" class="skills-container"></div>
+                    <input type="hidden" id="skills" name="skills" required>
+                    <div class="error-message" id="skills-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">Work Experience (Years)</label>
+                    <input type="number" id="experience" name="experience" min="0" max="50">
+                </div>
+
+                <div class="form-group">
+                    <label for="resume">Upload Resume *</label>
+                    <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                    <div class="error-message" id="resume-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="additional-info">Additional Information</label>
+                    <textarea id="additional-info" name="additional-info" rows="4" placeholder="Tell us more about yourself"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Enrollment</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer Section (same as index.html) -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Specyf</h3>
+                <p>Leading manpower services company connecting talented professionals with outstanding opportunities.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="company-enrollment.html">Company Enrollment</a></li>
+                    <li><a href="employee-enrollment.html">Employee Enrollment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Specyf. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { submitEmployeeEnrollment } from './js/firebase-config.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('employee-enrollment-form');
+            const skillsInput = document.getElementById('skills-input');
+            const skillsContainer = document.getElementById('skills-container');
+            const skillsField = document.getElementById('skills');
+            const skills = [];
+
+            const fields = [
+                'full-name', 
+                'email', 
+                'phone', 
+                'age', 
+                'education', 
+                'industry', 
+                'skills',
+                'resume'
+            ];
+
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            function validatePhone(phone) {
+                const re = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+                return re.test(phone);
+            }
+
+            function showError(fieldId, message) {
+                const errorEl = document.getElementById(`${fieldId}-error`);
+                errorEl.textContent = message;
+            }
+
+            function clearErrors() {
+                fields.forEach(field => {
+                    const errorEl = document.getElementById(`${field}-error`);
+                    errorEl.textContent = '';
+                });
+            }
+
+            // Skills Management
+            skillsInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const skill = skillsInput.value.trim();
+                    
+                    if (skill && !skills.includes(skill)) {
+                        skills.push(skill);
+                        skillsField.value = skills.join(',');
+
+                        const skillTag = document.createElement('div');
+                        skillTag.classList.add('skill-tag');
+                        skillTag.innerHTML = `
+                            ${skill}
+                            <span class="remove-skill">×</span>
+                        `;
+
+                        const removeBtn = skillTag.querySelector('.remove-skill');
+                        removeBtn.addEventListener('click', () => {
+                            const index = skills.indexOf(skill);
+                            if (index > -1) {
+                                skills.splice(index, 1);
+                                skillsField.value = skills.join(',');
+                                skillsContainer.removeChild(skillTag);
+                            }
+                        });
+
+                        skillsContainer.appendChild(skillTag);
+                        skillsInput.value = '';
+                    }
+                }
+            });
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                clearErrors();
+
+                let isValid = true;
+
+                // Full Name validation
+                const fullName = document.getElementById('full-name').value.trim();
+                if (fullName.length < 2) {
+                    showError('full-name', 'Full name must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                // Email validation
+                const email = document.getElementById('email').value.trim();
+                if (!validateEmail(email)) {
+                    showError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+
+                // Phone validation
+                const phone = document.getElementById('phone').value.trim();
+                if (!validatePhone(phone)) {
+                    showError('phone', 'Please enter a valid phone number');
+                    isValid = false;
+                }
+
+                // Age validation
+                const age = document.getElementById('age').value;
+                if (age < 18 || age > 65) {
+                    showError('age', 'Age must be between 18 and 65');
+                    isValid = false;
+                }
+
+                // Education validation
+                const education = document.getElementById('education').value;
+                if (!education) {
+                    showError('education', 'Please select your highest education level');
+                    isValid = false;
+                }
+
+                // Industry validation
+                const industry = document.getElementById('industry').value;
+                if (!industry) {
+                    showError('industry', 'Please select a preferred industry');
+                    isValid = false;
+                }
+
+                // Skills validation
+                if (skills.length === 0) {
+                    showError('skills', 'Please add at least one skill');
+                    isValid = false;
+                }
+
+                // Resume validation
+                const resume = document.getElementById('resume').files[0];
+                if (!resume) {
+                    showError('resume', 'Please upload your resume');
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    try {
+                        // Prepare enrollment data
+                        const enrollmentData = {
+                            fullName: fullName,
+                            email: email,
+                            phone: phone,
+                            age: age,
+                            education: education,
+                            industry: industry,
+                            skills: skills,
+                            experience: document.getElementById('experience').value || 0,
+                            additionalInfo: document.getElementById('additional-info').value.trim()
+                        };
+
+                        // Submit to Firebase
+                        const docId = await submitEmployeeEnrollment(enrollmentData);
+                        
+                        // Show success message
+                        alert(`Employee enrollment submitted successfully! Enrollment ID: ${docId}`);
+                        form.reset();
+                        skills.length = 0;
+                        skillsContainer.innerHTML = '';
+                        skillsField.value = '';
+                    } catch (error) {
+                        console.error('Enrollment submission error:', error);
+                        alert('Failed to submit enrollment. Please try again.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

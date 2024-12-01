@@ -1,9 +1,0 @@
-{
-  "name": "specyf-admin-setup",
-  "version": "1.0.0",
-  "description": "Admin setup for Specyf dashboard",
-  "main": "set-admin-claims.js",
-  "dependencies": {
-    "firebase-admin": "^11.9.0"
-  }
-}

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Enrollment - Specyf</title>
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .enrollment-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section (same as index.html) -->
+    <header>
+        <nav>
+            <div class="logo">Specyf</div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="company-enrollment.html" class="active">Company Enrollment</a></li>
+                <li><a href="employee-enrollment.html">Employee Enrollment</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="enrollment-container">
+            <h1>Company Enrollment</h1>
+            <p>Join Specyf and unlock a world of talent and opportunities.</p>
+            
+            <form id="company-enrollment-form">
+                <div class="form-group">
+                    <label for="company-name">Company Name *</label>
+                    <input type="text" id="company-name" name="company-name" required>
+                    <div class="error-message" id="company-name-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="company-email">Company Email *</label>
+                    <input type="email" id="company-email" name="company-email" required>
+                    <div class="error-message" id="company-email-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="company-phone">Company Phone *</label>
+                    <input type="tel" id="company-phone" name="company-phone" required>
+                    <div class="error-message" id="company-phone-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="company-size">Company Size</label>
+                    <select id="company-size" name="company-size">
+                        <option value="">Select Company Size</option>
+                        <option value="1-10">1-10 Employees</option>
+                        <option value="11-50">11-50 Employees</option>
+                        <option value="51-200">51-200 Employees</option>
+                        <option value="201-500">201-500 Employees</option>
+                        <option value="500+">500+ Employees</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="industry">Industry *</label>
+                    <select id="industry" name="industry" required>
+                        <option value="">Select Industry</option>
+                        <option value="it">Information Technology</option>
+                        <option value="finance">Finance & Banking</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="manufacturing">Manufacturing</option>
+                        <option value="education">Education</option>
+                        <option value="retail">Retail</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="error-message" id="industry-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="requirements">Hiring Requirements</label>
+                    <textarea id="requirements" name="requirements" rows="4" placeholder="Describe your hiring needs"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-person">Contact Person Name *</label>
+                    <input type="text" id="contact-person" name="contact-person" required>
+                    <div class="error-message" id="contact-person-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-designation">Contact Person Designation *</label>
+                    <input type="text" id="contact-designation" name="contact-designation" required>
+                    <div class="error-message" id="contact-designation-error"></div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Enrollment</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer Section (same as index.html) -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Specyf</h3>
+                <p>Leading manpower services company connecting talented professionals with outstanding opportunities.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="company-enrollment.html">Company Enrollment</a></li>
+                    <li><a href="employee-enrollment.html">Employee Enrollment</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Specyf. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { submitCompanyEnrollment } from './js/firebase-config.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('company-enrollment-form');
+            const fields = [
+                'company-name', 
+                'company-email', 
+                'company-phone', 
+                'industry', 
+                'contact-person', 
+                'contact-designation'
+            ];
+
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            function validatePhone(phone) {
+                const re = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
+                return re.test(phone);
+            }
+
+            function showError(fieldId, message) {
+                const errorEl = document.getElementById(`${fieldId}-error`);
+                errorEl.textContent = message;
+            }
+
+            function clearErrors() {
+                fields.forEach(field => {
+                    const errorEl = document.getElementById(`${field}-error`);
+                    errorEl.textContent = '';
+                });
+            }
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                clearErrors();
+
+                let isValid = true;
+
+                // Validation logic
+                const companyName = document.getElementById('company-name').value.trim();
+                if (companyName.length < 2) {
+                    showError('company-name', 'Company name must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                const email = document.getElementById('company-email').value.trim();
+                if (!validateEmail(email)) {
+                    showError('company-email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+
+                const phone = document.getElementById('company-phone').value.trim();
+                if (!validatePhone(phone)) {
+                    showError('company-phone', 'Please enter a valid phone number');
+                    isValid = false;
+                }
+
+                const industry = document.getElementById('industry').value;
+                if (!industry) {
+                    showError('industry', 'Please select an industry');
+                    isValid = false;
+                }
+
+                const contactPerson = document.getElementById('contact-person').value.trim();
+                if (contactPerson.length < 2) {
+                    showError('contact-person', 'Contact person name must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                const contactDesignation = document.getElementById('contact-designation').value.trim();
+                if (contactDesignation.length < 2) {
+                    showError('contact-designation', 'Contact person designation must be at least 2 characters long');
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    try {
+                        // Prepare enrollment data
+                        const enrollmentData = {
+                            companyName: companyName,
+                            email: email,
+                            phone: phone,
+                            industry: industry,
+                            companySize: document.getElementById('company-size').value,
+                            contactPerson: contactPerson,
+                            contactDesignation: contactDesignation,
+                            requirements: document.getElementById('requirements').value.trim()
+                        };
+
+                        // Submit to Firebase
+                        const docId = await submitCompanyEnrollment(enrollmentData);
+                        
+                        // Show success message
+                        alert(`Company enrollment submitted successfully! Enrollment ID: ${docId}`);
+                        form.reset();
+                    } catch (error) {
+                        console.error('Enrollment submission error:', error);
+                        alert('Failed to submit enrollment. Please try again.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

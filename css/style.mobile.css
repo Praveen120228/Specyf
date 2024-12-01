@@ -1,0 +1,99 @@
+/* Consolidated Mobile Styles for screens up to 768px */
+@media screen and (max-width: 768px) {
+    /* Navigation */
+    .hamburger {
+        display: block;
+        float: right;
+        cursor: pointer;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        background: var(--white);
+    }
+
+    nav ul li {
+        margin: 1rem 0;
+        text-align: center;
+    }
+
+    /* Dropdown Menus */
+    .services-dropdown .dropdown-content {
+        position: static;
+        display: none;
+        width: 100%;
+    }
+
+    /* Typography */
+    .about-hero h1,
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    /* Authentication Sections */
+    .auth-section {
+        padding: 2rem 1rem;
+    }
+
+    .auth-box {
+        padding: 1.5rem;
+    }
+
+    /* Footer */
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+
+    /* Service Cards */
+    .service-card {
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    /* Contact Form */
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+    }
+
+    /* Responsive Images */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Buttons */
+    .cta-button {
+        width: 100%;
+        padding: 0.8rem 1rem;
+    }
+
+    /* Responsive Layouts */
+    .flex-container {
+        flex-direction: column;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Additional Mobile-Specific Adjustments */
+@media screen and (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Signup - Specyf</title>
+    <link rel="stylesheet" href="css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Specyf</div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="company-signup.html" class="active">Company Signup</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="auth-section">
+            <div class="auth-container">
+                <div class="auth-box signup-box">
+                    <div class="auth-header">
+                        <i class="fas fa-building"></i>
+                        <h1>Company Registration</h1>
+                        <p>Create your company account on Specyf</p>
+                    </div>
+
+                    <form id="company-signup-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="contact-person-name">Contact Person Name *</label>
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="contact-person-name" name="contact-person-name" required>
+                                <div class="error-message" id="contact-person-name-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company-name">Company Name *</label>
+                            <div class="input-group">
+                                <i class="fas fa-building"></i>
+                                <input type="text" id="company-name" name="company-name" required>
+                                <div class="error-message" id="company-name-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Company Email *</label>
+                            <div class="input-group">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" name="email" required>
+                                <div class="error-message" id="email-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <div class="input-group">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" name="password" required>
+                                <i class="fas fa-eye password-toggle"></i>
+                                <div class="error-message" id="password-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password *</label>
+                            <div class="input-group">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="confirm-password" name="confirm-password" required>
+                                <i class="fas fa-eye password-toggle"></i>
+                                <div class="error-message" id="confirm-password-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company-size">Company Size</label>
+                            <div class="input-group">
+                                <i class="fas fa-users"></i>
+                                <select id="company-size" name="company-size" required>
+                                    <option value="">Select Company Size</option>
+                                    <option value="1-10">1-10 Employees</option>
+                                    <option value="11-50">11-50 Employees</option>
+                                    <option value="51-200">51-200 Employees</option>
+                                    <option value="201-500">201-500 Employees</option>
+                                    <option value="500+">500+ Employees</option>
+                                </select>
+                                <div class="error-message" id="company-size-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="industry">Industry *</label>
+                            <div class="input-group">
+                                <i class="fas fa-industry"></i>
+                                <select id="industry" name="industry" required>
+                                    <option value="">Select Industry</option>
+                                    <option value="it">Information Technology</option>
+                                    <option value="finance">Finance & Banking</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="manufacturing">Manufacturing</option>
+                                    <option value="education">Education</option>
+                                    <option value="retail">Retail</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <div class="error-message" id="industry-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <label for="terms">I agree to the Terms of Service and Privacy Policy</label>
+                                <div class="error-message" id="terms-error"></div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="auth-button">Create Company Account</button>
+
+                        <div class="auth-footer">
+                            <p>Already have an account? <a href="login.html">Login</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Specyf</h3>
+                <p>Connecting companies with top talent through innovative recruitment solutions.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="company-signup.html">Company Signup</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Specyf. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { registerUser } from './js/firebase-config.js';
+
+        const companySignupForm = document.getElementById('company-signup-form');
+
+        companySignupForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(msg => msg.textContent = '');
+            
+            // Collect form data
+            const contactPersonName = document.getElementById('contact-person-name').value.trim();
+            const companyName = document.getElementById('company-name').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const companySize = document.getElementById('company-size').value;
+            const industry = document.getElementById('industry').value;
+            const terms = document.getElementById('terms').checked;
+            
+            let isValid = true;
+
+            // Validation
+            if (!contactPersonName) {
+                document.getElementById('contact-person-name-error').textContent = 'Contact person name is required';
+                isValid = false;
+            }
+
+            if (!companyName) {
+                document.getElementById('company-name-error').textContent = 'Company name is required';
+                isValid = false;
+            }
+
+            // Email validation
+            if (!isValidEmail(email)) {
+                document.getElementById('email-error').textContent = 'Invalid email address';
+                isValid = false;
+            }
+
+            // Password validation
+            if (password !== confirmPassword) {
+                document.getElementById('confirm-password-error').textContent = 'Passwords do not match';
+                isValid = false;
+            }
+
+            if (password.length < 6) {
+                document.getElementById('password-error').textContent = 'Password must be at least 6 characters';
+                isValid = false;
+            }
+
+            // Additional validations
+            if (!companySize) {
+                document.getElementById('company-size-error').textContent = 'Company size is required';
+                isValid = false;
+            }
+
+            if (!industry) {
+                document.getElementById('industry-error').textContent = 'Industry is required';
+                isValid = false;
+            }
+
+            // Terms validation
+            if (!terms) {
+                document.getElementById('terms-error').textContent = 'You must agree to the terms';
+                isValid = false;
+            }
+
+            if (isValid) {
+                try {
+                    // Prepare additional company data
+                    const companyData = {
+                        contactPersonName,
+                        companyName,
+                        companySize,
+                        industry
+                    };
+
+                    // Register user
+                    const user = await registerUser(email, password, 'company', companyData);
+                    
+                    // Redirect to login or dashboard
+                    alert('Company account created successfully!');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    // Handle specific Firebase auth errors
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            document.getElementById('email-error').textContent = 'Email is already registered';
+                            break;
+                        case 'auth/invalid-email':
+                            document.getElementById('email-error').textContent = 'Invalid email address';
+                            break;
+                        case 'auth/weak-password':
+                            document.getElementById('password-error').textContent = 'Password is too weak';
+                            break;
+                        default:
+                            alert('Company signup failed. Please try again.');
+                    }
+                }
+            }
+        });
+
+        // Email validation helper
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Password toggle function
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Attach password toggle event listeners
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const inputId = toggle.previousElementSibling.id;
+                togglePassword(inputId);
+            });
+        });
+    </script>
+</body>
+</html>

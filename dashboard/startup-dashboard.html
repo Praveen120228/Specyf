@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Founder Dashboard - Specyf</title>
+    <link rel="stylesheet" href="../css/style.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Specyf Startup Founder Dashboard</div>
+            <div id="user-profile">
+                <button id="logout-button">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="dashboard-overview">
+            <h1>Welcome, <span id="founder-name"></span></h1>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Funding Rounds</h3>
+                    <p id="funding-rounds">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Team Members</h3>
+                    <p id="team-members">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Startup Growth</h3>
+                    <p id="startup-growth">0%</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="startup-details">
+            <h2>Startup Profile</h2>
+            <div class="profile-details">
+                <div class="profile-field">
+                    <strong>Company Name:</strong>
+                    <span id="company-name"></span>
+                </div>
+                <div class="profile-field">
+                    <strong>Industry:</strong>
+                    <span id="industry"></span>
+                </div>
+                <div class="profile-field">
+                    <strong>Founded:</strong>
+                    <span id="founded-date"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-buttons">
+                <button class="btn btn-primary">Post Job Opening</button>
+                <button class="btn btn-secondary">Find Talent</button>
+                <button class="btn btn-tertiary">Update Company Profile</button>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="../js/auth-config.js"></script>
+    <script type="module">
+        import { AuthService } from '../js/auth-config.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = AuthService.getCurrentUser();
+            if (!currentUser) {
+                window.location.href = '../login.html';
+            }
+
+            document.getElementById('founder-name').textContent = currentUser.fullName || currentUser.companyName;
+            document.getElementById('company-name').textContent = currentUser.companyName || 'Not Specified';
+            document.getElementById('industry').textContent = currentUser.industry || 'Not Specified';
+
+            document.getElementById('logout-button').addEventListener('click', () => {
+                AuthService.logout();
+            });
+        });
+    </script>
+</body>
+</html>

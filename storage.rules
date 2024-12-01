@@ -1,0 +1,77 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Authentication helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // User role verification functions
+    function isEmployee() {
+      return request.auth.token.userType == 'employee';
+    }
+
+    function isCompany() {
+      return request.auth.token.userType == 'company';
+    }
+
+    function isStartupFounder() {
+      return request.auth.token.userType == 'startup';
+    }
+
+    function isFreelancer() {
+      return request.auth.token.userType == 'freelancer';
+    }
+
+    function isRecruitmentAgency() {
+      return request.auth.token.userType == 'recruitment';
+    }
+
+    // Profile picture upload rules
+    match /profile_pictures/{userId} {
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if true;  // Allow public read access to profile pictures
+    }
+
+    // Verification document upload rules
+    match /verification_documents/{userId}/{documentId} {
+      allow write: if isAuthenticated() && 
+                    request.auth.uid == userId && 
+                    request.resource.size < 5 * 1024 * 1024 &&  // 5MB max
+                    request.resource.contentType.matches('image/.*|application/pdf');
+      
+      allow read: if isAuthenticated() && 
+                   (request.auth.uid == userId || 
+                    request.auth.token.admin == true);
+    }
+
+    // Company logo upload rules
+    match /company_logos/{companyId} {
+      allow write: if isCompany() && 
+                    request.auth.uid == companyId && 
+                    request.resource.size < 2 * 1024 * 1024;  // 2MB max
+      allow read: if true;  // Public read access
+    }
+
+    // Portfolio/Work samples for freelancers
+    match /freelancer_portfolios/{freelancerId}/{portfolioId} {
+      allow write: if isFreelancer() && 
+                    request.auth.uid == freelancerId && 
+                    request.resource.size < 10 * 1024 * 1024;  // 10MB max
+      allow read: if true;  // Public read access
+    }
+
+    // Job posting attachments
+    match /job_attachments/{companyId}/{attachmentId} {
+      allow write: if isCompany() && 
+                    request.auth.uid == companyId && 
+                    request.resource.size < 5 * 1024 * 1024;  // 5MB max
+      allow read: if isAuthenticated();
+    }
+
+    // Global security default
+    match /{allPaths=**} {
+      allow read, write: if false;  // Deny all other operations
+    }
+  }
+}
