@@ -7,6 +7,9 @@ import {
     handleFirebaseError 
 } from './firebase-config.js';
 
+// Base URL for GitHub Pages
+const BASE_URL = '/Specyf';
+
 // Login Validation Service
 const LoginValidationService = {
     validateEmail(email) {
@@ -112,7 +115,7 @@ async function handleLoginSubmission(event) {
         
         // Redirect based on user type
         const userType = result.userData?.userType || 'default';
-        window.location.href = `/${userType}-dashboard.html`;
+        window.location.href = `${BASE_URL}/dashboard/${userType}-dashboard.html`;
 
     } catch (error) {
         loginError.textContent = error.message;
@@ -134,11 +137,10 @@ async function handleSignupSubmission(event) {
     const termsCheckbox = document.getElementById('terms');
     const signupError = document.getElementById('signup-error');
 
-    // Collect form data
     const signupData = {
         userType: userTypeSelect.value,
-        fullName: fullNameInput.value.trim(),
-        email: emailInput.value.trim(),
+        fullName: fullNameInput.value,
+        email: emailInput.value,
         password: passwordInput.value,
         confirmPassword: confirmPasswordInput.value,
         termsAgreed: termsCheckbox.checked
@@ -146,38 +148,24 @@ async function handleSignupSubmission(event) {
 
     try {
         // Validate signup data
-        const validationResult = SignupValidationService.validateSignupData(signupData);
+        const validation = SignupValidationService.validateSignupData(signupData);
         
-        if (!validationResult.isValid) {
-            Object.entries(validationResult.errors).forEach(([field, message]) => {
-                const errorElement = document.getElementById(`${field}-error`);
-                if (errorElement) {
-                    errorElement.textContent = message;
-                }
-            });
-            return;
+        if (!validation.isValid) {
+            const firstError = Object.values(validation.errors)[0];
+            throw new Error(firstError);
         }
 
         // Register user with Firebase
-        await FirebaseAuth.registerUser(
-            signupData.email, 
-            signupData.password, 
-            {
-                userType: signupData.userType,
-                fullName: signupData.fullName
-            }
-        );
+        const result = await FirebaseAuth.registerUser(signupData.email, signupData.password, {
+            userType: signupData.userType,
+            fullName: signupData.fullName
+        });
 
-        signupError.textContent = 'Account created successfully!';
-        signupError.style.color = 'green';
-
-        // Redirect to login
-        setTimeout(() => {
-            window.location.href = '/login.html';
-        }, 1500);
+        // Redirect to appropriate dashboard
+        window.location.href = `${BASE_URL}/dashboard/${signupData.userType}-dashboard.html`;
 
     } catch (error) {
-        signupError.textContent = error.message || 'Signup failed. Please try again.';
+        signupError.textContent = error.message;
         signupError.style.color = 'red';
         console.error('Signup Error:', error);
     }
