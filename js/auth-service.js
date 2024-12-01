@@ -28,11 +28,22 @@ async function retryOperation(operation, maxRetries = 3, initialDelay = 1000) {
 
 // Get the base URL for GitHub Pages
 const getBaseUrl = () => {
-    const pathSegments = window.location.pathname.split('/');
-    // Check if we're on GitHub Pages
-    if (pathSegments[1] === 'Specyf') {
-        return '/Specyf';
+    // Check if running locally
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return '';
     }
+
+    const pathSegments = window.location.pathname.split('/');
+    
+    // Check if we're on GitHub Pages
+    const githubRepoName = 'Specyf';
+    const githubPageIndex = pathSegments.indexOf(githubRepoName);
+    
+    if (githubPageIndex !== -1) {
+        return `/${githubRepoName}`;
+    }
+
+    // Fallback to root
     return '';
 };
 
@@ -191,6 +202,7 @@ class AuthService {
         console.log('[NAV] Attempting to navigate to dashboard');
         console.log('[NAV] Current user type:', this.userType);
         console.log('[NAV] Current base URL:', getBaseUrl());
+        console.log('[NAV] Current window location:', window.location.href);
         console.log('[NAV] Full AUTH_PATHS:', JSON.stringify(AUTH_PATHS, null, 2));
         
         if (!this.userType) {
@@ -202,32 +214,51 @@ class AuthService {
         const dashboardPath = AUTH_PATHS.dashboards[this.userType];
         
         if (dashboardPath) {
-            console.log(`[NAV] Redirecting to ${dashboardPath}`);
+            console.log(`[NAV] Attempting to navigate to ${dashboardPath}`);
             
-            // Add error handling for navigation
+            // Comprehensive navigation attempt
             try {
-                // Verify dashboard file exists before redirecting
-                fetch(dashboardPath)
+                // Create a full URL
+                const fullUrl = new URL(dashboardPath, window.location.origin).href;
+                console.log(`[NAV] Full navigation URL: ${fullUrl}`);
+
+                // Attempt to fetch the dashboard page
+                fetch(fullUrl)
                     .then(response => {
+                        console.log(`[NAV] Fetch response status: ${response.status}`);
                         if (response.ok) {
-                            window.location.href = dashboardPath;
+                            window.location.href = fullUrl;
                         } else {
-                            console.error(`[NAV] Dashboard file not found: ${dashboardPath}`);
-                            window.location.href = AUTH_PATHS.login;
+                            console.error(`[NAV] Dashboard file not found: ${fullUrl}`);
+                            // Fallback navigation
+                            this.fallbackNavigation();
                         }
                     })
                     .catch(error => {
-                        console.error('[NAV] Navigation error:', error);
-                        window.location.href = AUTH_PATHS.login;
+                        console.error('[NAV] Navigation fetch error:', error);
+                        // Fallback navigation
+                        this.fallbackNavigation();
                     });
             } catch (error) {
                 console.error('[NAV] Unexpected navigation error:', error);
-                window.location.href = AUTH_PATHS.login;
+                // Fallback navigation
+                this.fallbackNavigation();
             }
         } else {
             console.error('[NAV] No dashboard path found for user type:', this.userType);
             window.location.href = AUTH_PATHS.login;
         }
+    }
+
+    // Fallback navigation method
+    fallbackNavigation() {
+        console.warn('[NAV] Attempting fallback navigation');
+        
+        // Try direct path navigation
+        const directPath = `/dashboard/${this.userType}-dashboard.html`;
+        console.log(`[NAV] Attempting direct path: ${directPath}`);
+        
+        window.location.href = directPath;
     }
 
     // Sign in user with retry mechanism
