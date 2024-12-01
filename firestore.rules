@@ -1,6 +1,13 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Allow access from GitHub Pages domain
+    match /{document=**} {
+      allow read: if request.auth != null && 
+                 (request.origin == null || 
+                  request.origin.matches('https://praveen120228.github.io'));
+    }
+
     // Authentication helper function
     function isAuthenticated() {
       return request.auth != null;
@@ -34,21 +41,18 @@ service cloud.firestore {
 
     // User profile rules
     match /users/{userId} {
-      // Users can only read and write their own profile
+      allow create: if request.auth != null;
       allow read, write: if request.auth.uid == userId;
     }
 
     // Company enrollment rules
     match /company_enrollments/{enrollmentId} {
-      // Companies can create enrollment, employees can read their company's enrollment
       allow create: if isCompany();
       allow read: if isCompany() || isEmployee();
     }
 
     // Job posting rules
     match /job_postings/{postingId} {
-      // Companies can create job postings
-      // All authenticated users can read job postings
       allow create: if isCompany();
       allow read: if isAuthenticated();
       allow update, delete: if isCompany() && request.auth.uid == resource.data.companyId;
@@ -56,38 +60,26 @@ service cloud.firestore {
 
     // Freelancer profile rules
     match /freelancer_profiles/{freelancerId} {
-      // Freelancers can manage their own profile
-      // Companies can read freelancer profiles
       allow create, update: if isFreelancer() && request.auth.uid == freelancerId;
       allow read: if isAuthenticated();
     }
 
     // Recruitment agency rules
     match /recruitment_agencies/{agencyId} {
-      // Recruitment agencies can manage their own profile
       allow create, update: if isRecruitmentAgency() && request.auth.uid == agencyId;
       allow read: if isAuthenticated();
     }
 
     // Verification document rules
     match /verification_documents/{documentId} {
-      // Only authenticated users can upload verification documents
-      // Documents can only be read by the user who uploaded them or admin
       allow create: if isAuthenticated();
       allow read: if request.auth.uid == resource.data.userId;
     }
 
     // Messaging/Chat rules
     match /conversations/{conversationId} {
-      // Only participants of a conversation can read/write messages
       allow read, write: if isAuthenticated() && 
                            (request.auth.uid in resource.data.participants);
-    }
-
-    // Global security default
-    match /{document=**} {
-      // Deny all other read/write operations by default
-      allow read, write: if false;
     }
   }
 }
