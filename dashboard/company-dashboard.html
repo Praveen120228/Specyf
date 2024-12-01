@@ -4,92 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Dashboard - Specyf</title>
-    <link rel="stylesheet" href="../css/style.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Firebase and Auth Dependencies -->
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/auth-service.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">Specyf Company Dashboard</div>
-            <div id="user-profile">
-                <button id="logout-button">Logout</button>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h2>Specyf</h2>
+                <button class="sidebar-toggle" aria-label="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-        </nav>
-    </header>
-
-    <main class="dashboard-container">
-        <section class="dashboard-overview">
-            <h1>Welcome, <span id="company-name"></span></h1>
             
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <i class="fas fa-users"></i>
-                    <h3>Total Candidates</h3>
-                    <p id="total-candidates">0</p>
+            <nav>
+                <ul class="sidebar-nav">
+                    <li>
+                        <a href="company-dashboard.html" class="active">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="company-profile.html">
+                            <i class="fas fa-building"></i>
+                            <span>Company Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="company-jobs.html">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Postings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="company-candidates.html">
+                            <i class="fas fa-users"></i>
+                            <span>Candidates</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="sign-out-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sign Out</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Company Dashboard</h1>
+                <div id="user-profile" class="user-profile"></div>
+            </header>
+
+            <section class="dashboard-cards">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Active Job Postings</h3>
+                        <i class="fas fa-briefcase card-icon"></i>
+                    </div>
+                    <div id="job-postings">
+                        <p>Loading job postings...</p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn">Post New Job</button>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <i class="fas fa-briefcase"></i>
-                    <h3>Open Positions</h3>
-                    <p id="open-positions">0</p>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Candidate Applications</h3>
+                        <i class="fas fa-chart-pie card-icon"></i>
+                    </div>
+                    <div id="candidate-applications">
+                        <p>Loading applications...</p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn">Review Candidates</button>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Profile Views</h3>
-                    <p id="profile-views">0</p>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Company Profile</h3>
+                        <i class="fas fa-building card-icon"></i>
+                    </div>
+                    <div id="profile-completeness">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%;"></div>
+                        </div>
+                        <p>75% Complete</p>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn">Update Profile</button>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="recent-activity">
-            <h2>Recent Activity</h2>
-            <div id="activity-feed"></div>
-        </section>
-    </main>
-
-    <script type="module">
-        import authService from '../js/auth-service.js';
-
-        async function initializeDashboard() {
-            try {
-                // Get current user data
-                const userData = await authService.getCurrentUserData();
-                if (!userData) {
-                    console.error('No user data found');
-                    return;
-                }
-
-                // Update UI with user data
-                document.getElementById('company-name').textContent = userData.fullName || 'Company';
-                document.getElementById('user-email').textContent = userData.email;
-                document.getElementById('profile-email').textContent = userData.email;
-                document.getElementById('profile-name').textContent = userData.fullName;
-                document.getElementById('profile-type').textContent = 
-                    userData.userType.charAt(0).toUpperCase() + userData.userType.slice(1);
-
-            } catch (error) {
-                console.error('Dashboard initialization error:', error);
-                alert('Error loading dashboard. Please try logging in again.');
-            }
-        }
-
-        // Setup logout functionality
-        function setupLogout() {
-            const logoutButton = document.getElementById('logout-button');
-            logoutButton.addEventListener('click', async () => {
-                try {
-                    await authService.signOut();
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    alert('Error during logout. Please try again.');
-                }
-            });
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeDashboard();
-            setupLogout();
-        });
-    </script>
+            </section>
+        </main>
+    </div>
 </body>
 </html>

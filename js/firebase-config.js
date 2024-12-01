@@ -67,24 +67,36 @@ function handleFirebaseError(error) {
 const FirebaseAuth = {
     async registerUser(email, password, userData) {
         try {
+            console.log('Starting user registration...', { email, userType: userData.userType });
+            
             // Create user in Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+            console.log('User created in Firebase Auth:', user.uid);
 
-            // Store user data in Firestore
-            await setDoc(doc(db, 'users', user.uid), {
+            // Prepare user data for Firestore
+            const userDataForStore = {
                 email: user.email,
                 userType: userData.userType,
                 fullName: userData.fullName,
-                createdAt: new Date().toISOString()
-            });
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                uid: user.uid
+            };
+
+            // Store user data in Firestore
+            const userDocRef = doc(db, 'users', user.uid);
+            await setDoc(userDocRef, userDataForStore);
+            console.log('User data stored in Firestore');
 
             return {
                 user,
+                userData: userDataForStore,
                 message: 'Registration successful!'
             };
         } catch (error) {
             console.error('Registration Error:', error);
+            console.error('Error details:', { code: error.code, message: error.message });
             const userMessage = handleFirebaseError(error);
             throw new Error(userMessage);
         }
@@ -92,12 +104,24 @@ const FirebaseAuth = {
 
     async signInUser(email, password) {
         try {
+            console.log('[FIREBASE] Attempting sign in:', email);
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Fetch user data from Firestore
+            console.log('[FIREBASE] Sign in successful, fetching user data');
             const userDoc = await getDoc(doc(db, 'users', user.uid));
-            const userData = userDoc.exists() ? userDoc.data() : {};
+            
+            if (!userDoc.exists()) {
+                console.error('[FIREBASE] User document not found');
+                throw new Error('User profile not found');
+            }
+
+            const userData = userDoc.data();
+            console.log('[FIREBASE] User data retrieved:', {
+                uid: user.uid,
+                email: user.email,
+                userType: userData.userType
+            });
 
             return {
                 user,
@@ -105,9 +129,24 @@ const FirebaseAuth = {
                 message: 'Login successful!'
             };
         } catch (error) {
-            console.error('Login Error:', error);
-            const userMessage = handleFirebaseError(error);
-            throw new Error(userMessage);
+            console.error('[FIREBASE] Login Error:', {
+                code: error.code,
+                message: error.message
+            });
+
+            // Detailed error handling
+            switch (error.code) {
+                case 'auth/invalid-credential':
+                    throw new Error('Invalid email or password. Please try again.');
+                case 'auth/user-not-found':
+                    throw new Error('No account found with this email. Please sign up.');
+                case 'auth/wrong-password':
+                    throw new Error('Incorrect password. Please try again.');
+                case 'auth/too-many-requests':
+                    throw new Error('Too many login attempts. Please try again later.');
+                default:
+                    throw new Error(handleFirebaseError(error));
+            }
         }
     },
 
