@@ -28,22 +28,11 @@ async function retryOperation(operation, maxRetries = 3, initialDelay = 1000) {
 
 // Get the base URL for GitHub Pages
 const getBaseUrl = () => {
-    // Check if running locally
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return '';
+    // For GitHub Pages
+    if (window.location.hostname.includes('github.io')) {
+        return '/Specyf';
     }
-
-    const pathSegments = window.location.pathname.split('/');
-    
-    // Check if we're on GitHub Pages
-    const githubRepoName = 'Specyf';
-    const githubPageIndex = pathSegments.indexOf(githubRepoName);
-    
-    if (githubPageIndex !== -1) {
-        return `/${githubRepoName}`;
-    }
-
-    // Fallback to root
+    // For local development
     return '';
 };
 
@@ -199,12 +188,13 @@ class AuthService {
 
     // Explicit navigation method
     navigateToDashboard() {
-        console.log('[NAV] Attempting to navigate to dashboard');
-        console.log('[NAV] Current user type:', this.userType);
-        console.log('[NAV] Current base URL:', getBaseUrl());
-        console.log('[NAV] Current window location:', window.location.href);
-        console.log('[NAV] Full AUTH_PATHS:', JSON.stringify(AUTH_PATHS, null, 2));
-        
+        console.log('[NAV] Navigation Debug Info:', {
+            hostname: window.location.hostname,
+            pathname: window.location.pathname,
+            baseUrl: getBaseUrl(),
+            userType: this.userType
+        });
+
         if (!this.userType) {
             console.error('[NAV] No user type found, redirecting to login');
             window.location.href = AUTH_PATHS.login;
@@ -214,35 +204,23 @@ class AuthService {
         const dashboardPath = AUTH_PATHS.dashboards[this.userType];
         
         if (dashboardPath) {
-            console.log(`[NAV] Attempting to navigate to ${dashboardPath}`);
+            console.log(`[NAV] Attempting navigation to: ${dashboardPath}`);
             
-            // Comprehensive navigation attempt
+            // Construct absolute URL for GitHub Pages
+            const isGitHubPages = window.location.hostname.includes('github.io');
+            const fullUrl = isGitHubPages 
+                ? `https://${window.location.host}${dashboardPath}`
+                : dashboardPath;
+            
+            console.log(`[NAV] Full navigation URL: ${fullUrl}`);
+            
+            // Perform navigation
             try {
-                // Create a full URL
-                const fullUrl = new URL(dashboardPath, window.location.origin).href;
-                console.log(`[NAV] Full navigation URL: ${fullUrl}`);
-
-                // Attempt to fetch the dashboard page
-                fetch(fullUrl)
-                    .then(response => {
-                        console.log(`[NAV] Fetch response status: ${response.status}`);
-                        if (response.ok) {
-                            window.location.href = fullUrl;
-                        } else {
-                            console.error(`[NAV] Dashboard file not found: ${fullUrl}`);
-                            // Fallback navigation
-                            this.fallbackNavigation();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('[NAV] Navigation fetch error:', error);
-                        // Fallback navigation
-                        this.fallbackNavigation();
-                    });
+                window.location.href = fullUrl;
             } catch (error) {
-                console.error('[NAV] Unexpected navigation error:', error);
-                // Fallback navigation
-                this.fallbackNavigation();
+                console.error('[NAV] Navigation failed:', error);
+                // Fallback to direct path
+                window.location.href = `/Specyf/dashboard/${this.userType}-dashboard.html`;
             }
         } else {
             console.error('[NAV] No dashboard path found for user type:', this.userType);
