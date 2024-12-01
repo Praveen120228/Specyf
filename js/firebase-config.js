@@ -25,6 +25,17 @@ const firebaseConfig = {
     appId: "1:1059253882266:web:9e86e8bd91faabd68abe23"
 };
 
+// Authentication bypass configuration
+const BYPASS_EMAILS = [
+    'employee@specyf.com',
+    'company@specyf.com',
+    'startup@specyf.com',
+    'freelancer@specyf.com',
+    'recruitment@specyf.com'
+];
+
+const BYPASS_MODE = true;
+
 // Firebase Initialization with Error Handling
 let app, auth, db;
 try {
@@ -61,6 +72,20 @@ function handleFirebaseError(error) {
     };
 
     return errorMap[error.code] || error.message || 'An unknown error occurred';
+}
+
+// Helper function to determine user type from email
+function getUserTypeFromEmail(email) {
+    const emailLower = email.toLowerCase();
+    const userTypes = {
+        'employee@specyf.com': 'employee',
+        'company@specyf.com': 'company',
+        'startup@specyf.com': 'startup',
+        'freelancer@specyf.com': 'freelancer',
+        'recruitment@specyf.com': 'recruitment'
+    };
+    
+    return userTypes[emailLower] || 'employee';
 }
 
 // Authentication Service
@@ -103,6 +128,23 @@ const FirebaseAuth = {
     },
 
     async signInUser(email, password) {
+        // Bypass mode active
+        if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
+            console.warn('[FIREBASE] AUTHENTICATION BYPASSED - NOT SECURE!');
+            
+            // Simulate successful authentication
+            return {
+                user: {
+                    uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
+                    email: email
+                },
+                userData: {
+                    userType: getUserTypeFromEmail(email)
+                }
+            };
+        }
+
+        // Original Firebase authentication logic
         try {
             console.log('[FIREBASE] Attempting sign in:', email);
             const userCredential = await signInWithEmailAndPassword(auth, email, password);

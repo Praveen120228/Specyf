@@ -210,39 +210,6 @@ class AuthService {
 
     // Sign in user with retry mechanism
     async signIn(email, password) {
-        // Temporary bypass
-        if (this.AUTHENTICATION_BYPASS) {
-            console.warn('[AUTH] AUTHENTICATION BYPASSED - THIS IS NOT SECURE!');
-            
-            // Simulate different user types based on email
-            const userTypes = {
-                'employee@specyf.com': 'employee',
-                'company@specyf.com': 'company',
-                'startup@specyf.com': 'startup',
-                'freelancer@specyf.com': 'freelancer',
-                'recruitment@specyf.com': 'recruitment'
-            };
-
-            const userType = userTypes[email.toLowerCase()] || 'employee';
-
-            // Simulate successful login
-            this.currentUser = { 
-                email: email,
-                uid: 'bypass_' + Math.random().toString(36).substr(2, 9)
-            };
-            this.userType = userType;
-
-            // Navigate to corresponding dashboard
-            this.navigateToDashboard();
-
-            return {
-                user: this.currentUser,
-                userData: { userType: userType },
-                message: 'Bypassed Authentication'
-            };
-        }
-
-        // Original authentication logic remains
         try {
             const result = await retryOperation(async () => {
                 return await FirebaseAuth.signInUser(email, password);
@@ -250,6 +217,11 @@ class AuthService {
             
             // Explicitly trigger navigation after successful login
             console.log('[AUTH] Login successful, navigating to dashboard');
+            
+            // Set current user and user type from result
+            this.currentUser = result.user;
+            this.userType = result.userData.userType;
+            
             this.navigateToDashboard();
             
             return result;
