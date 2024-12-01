@@ -36,6 +36,27 @@ const BYPASS_EMAILS = [
 
 const BYPASS_MODE = true;
 
+// Modify signInWithEmailAndPassword to handle bypass
+const originalSignInWithEmailAndPassword = signInWithEmailAndPassword;
+signInWithEmailAndPassword = async (auth, email, password) => {
+    // Bypass mode active
+    if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
+        console.warn('[FIREBASE] AUTHENTICATION BYPASSED - NOT SECURE!');
+        
+        // Create a mock user credential
+        return {
+            user: {
+                uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
+                email: email,
+                getIdToken: async () => 'bypass_token'
+            }
+        };
+    }
+
+    // Original Firebase authentication
+    return originalSignInWithEmailAndPassword(auth, email, password);
+};
+
 // Firebase Initialization with Error Handling
 let app, auth, db;
 try {
@@ -92,103 +113,70 @@ function getUserTypeFromEmail(email) {
 const FirebaseAuth = {
     async registerUser(email, password, userData) {
         try {
-            console.log('Starting user registration...', { email, userType: userData.userType });
-            
-            // Create user in Firebase Authentication
+            // Bypass registration in bypass mode
+            if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
+                return {
+                    user: {
+                        uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
+                        email: email
+                    },
+                    userData: userData
+                };
+            }
+
+            // Original registration logic
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log('User created in Firebase Auth:', user.uid);
-
-            // Prepare user data for Firestore
-            const userDataForStore = {
-                email: user.email,
-                userType: userData.userType,
-                fullName: userData.fullName,
-                createdAt: new Date().toISOString(),
-                lastLogin: new Date().toISOString(),
-                uid: user.uid
-            };
-
-            // Store user data in Firestore
-            const userDocRef = doc(db, 'users', user.uid);
-            await setDoc(userDocRef, userDataForStore);
-            console.log('User data stored in Firestore');
-
+            
+            // Store additional user data
+            await setDoc(doc(db, 'users', userCredential.user.uid), userData);
+            
             return {
-                user,
-                userData: userDataForStore,
-                message: 'Registration successful!'
+                user: userCredential.user,
+                userData: userData
             };
         } catch (error) {
-            console.error('Registration Error:', error);
-            console.error('Error details:', { code: error.code, message: error.message });
-            const userMessage = handleFirebaseError(error);
-            throw new Error(userMessage);
+            console.error('Registration error:', error);
+            throw handleFirebaseError(error);
         }
     },
 
     async signInUser(email, password) {
-        // Bypass mode active
-        if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
-            console.warn('[FIREBASE] AUTHENTICATION BYPASSED - NOT SECURE!');
-            
-            // Simulate successful authentication
-            return {
-                user: {
-                    uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
-                    email: email
-                },
-                userData: {
-                    userType: getUserTypeFromEmail(email)
-                }
-            };
-        }
-
-        // Original Firebase authentication logic
         try {
             console.log('[FIREBASE] Attempting sign in:', email);
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            console.log('[FIREBASE] Sign in successful, fetching user data');
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
             
-            if (!userDoc.exists()) {
-                console.error('[FIREBASE] User document not found');
-                throw new Error('User profile not found');
+            // Bypass mode
+            if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
+                const userType = getUserTypeFromEmail(email);
+                
+                return {
+                    user: {
+                        uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
+                        email: email
+                    },
+                    userData: { 
+                        userType: userType,
+                        email: email
+                    }
+                };
             }
 
-            const userData = userDoc.data();
-            console.log('[FIREBASE] User data retrieved:', {
-                uid: user.uid,
-                email: user.email,
-                userType: userData.userType
-            });
-
-            return {
-                user,
-                userData,
-                message: 'Login successful!'
-            };
+            // Original sign-in logic
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            
+            // Fetch user document
+            const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+            
+            if (userDoc.exists()) {
+                return {
+                    user: userCredential.user,
+                    userData: userDoc.data()
+                };
+            } else {
+                throw new Error('User document not found');
+            }
         } catch (error) {
-            console.error('[FIREBASE] Login Error:', {
-                code: error.code,
-                message: error.message
-            });
-
-            // Detailed error handling
-            switch (error.code) {
-                case 'auth/invalid-credential':
-                    throw new Error('Invalid email or password. Please try again.');
-                case 'auth/user-not-found':
-                    throw new Error('No account found with this email. Please sign up.');
-                case 'auth/wrong-password':
-                    throw new Error('Incorrect password. Please try again.');
-                case 'auth/too-many-requests':
-                    throw new Error('Too many login attempts. Please try again later.');
-                default:
-                    throw new Error(handleFirebaseError(error));
-            }
+            console.error('[FIREBASE] Sign-in error:', error);
+            throw handleFirebaseError(error);
         }
     },
 
