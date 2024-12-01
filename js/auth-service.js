@@ -54,11 +54,18 @@ class AuthService {
         this.currentUser = null;
         this.userType = null;
         this.lastNavigatedPath = null;
+        this.AUTHENTICATION_BYPASS = true; // Temporary authentication bypass
         this.setupAuthListener();
     }
 
     // Set up authentication state listener with retry mechanism
     setupAuthListener() {
+        // If bypass is active, do nothing
+        if (this.AUTHENTICATION_BYPASS) {
+            console.warn('[AUTH] Authentication listener bypassed');
+            return;
+        }
+
         console.log('[AUTH] Setting up authentication listener');
         onAuthStateChanged(auth, async (user) => {
             console.log('[AUTH] Auth state changed:', user ? user.uid : 'No user');
@@ -203,6 +210,39 @@ class AuthService {
 
     // Sign in user with retry mechanism
     async signIn(email, password) {
+        // Temporary bypass
+        if (this.AUTHENTICATION_BYPASS) {
+            console.warn('[AUTH] AUTHENTICATION BYPASSED - THIS IS NOT SECURE!');
+            
+            // Simulate different user types based on email
+            const userTypes = {
+                'employee@specyf.com': 'employee',
+                'company@specyf.com': 'company',
+                'startup@specyf.com': 'startup',
+                'freelancer@specyf.com': 'freelancer',
+                'recruitment@specyf.com': 'recruitment'
+            };
+
+            const userType = userTypes[email.toLowerCase()] || 'employee';
+
+            // Simulate successful login
+            this.currentUser = { 
+                email: email,
+                uid: 'bypass_' + Math.random().toString(36).substr(2, 9)
+            };
+            this.userType = userType;
+
+            // Navigate to corresponding dashboard
+            this.navigateToDashboard();
+
+            return {
+                user: this.currentUser,
+                userData: { userType: userType },
+                message: 'Bypassed Authentication'
+            };
+        }
+
+        // Original authentication logic remains
         try {
             const result = await retryOperation(async () => {
                 return await FirebaseAuth.signInUser(email, password);

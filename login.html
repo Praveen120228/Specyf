@@ -30,6 +30,18 @@
 <body>
     <div class="login-container">
         <h2 class="text-center mb-4">Specyf Login</h2>
+        <div class="bypass-instructions" style="background-color: #ffeeee; padding: 10px; margin: 10px 0; border: 1px solid #ff9999;">
+            <h3>🚨 Authentication Bypass Mode 🚨</h3>
+            <p>Use these emails to bypass authentication:</p>
+            <ul>
+                <li>employee@specyf.com (Employee Dashboard)</li>
+                <li>company@specyf.com (Company Dashboard)</li>
+                <li>startup@specyf.com (Startup Founder Dashboard)</li>
+                <li>freelancer@specyf.com (Freelancer Dashboard)</li>
+                <li>recruitment@specyf.com (Recruitment Agency Dashboard)</li>
+            </ul>
+            <p><strong>Note:</strong> Use any password. This is for temporary testing only!</p>
+        </div>
         <form id="login-form">
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
@@ -92,9 +104,9 @@
                     throw new Error('Please enter a valid email address');
                 }
 
-                // Validate password
-                if (!passwordInput.value || passwordInput.value.length < 8) {
-                    throw new Error('Password must be at least 8 characters');
+                // Validate password (relaxed for bypass mode)
+                if (!passwordInput.value) {
+                    throw new Error('Please enter a password');
                 }
 
                 // Attempt login
