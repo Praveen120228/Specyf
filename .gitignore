@@ -4,3 +4,5 @@ node_modules/
 .env
 .vscode/
 .idea/
+service-account-key.json
+admin-setup/service-account-key.json

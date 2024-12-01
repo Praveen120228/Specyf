@@ -3,169 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Companies Management - Specyf Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>Companies - Specyf Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-                <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="index.html">
-                                <i class="bi bi-speedometer2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active text-white" href="companies.html">
-                                <i class="bi bi-building"></i> Companies
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="employees.html">
-                                <i class="bi bi-people"></i> Employees
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="analytics.html">
-                                <i class="bi bi-graph-up"></i> Analytics
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="settings.html">
-                                <i class="bi bi-gear"></i> Settings
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="Specyf Logo" class="logo">
+                <h2>Specyf Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="companies.html" class="nav-item active">
+                    <i class="fas fa-building"></i>
+                    <span>Companies</span>
+                </a>
+                <a href="employees.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
+                </a>
+                <a href="jobs.html" class="nav-item">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Jobs</span>
+                </a>
+                <a href="candidates.html" class="nav-item">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Candidates</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
             </nav>
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin" class="admin-avatar">
+                    <div class="admin-details">
+                        <span id="adminName">Admin User</span>
+                        <span id="adminEmail" class="admin-email"></span>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
 
-            <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1>Companies Management</h1>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Companies</h1>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search companies..." id="searchCompanies">
+                        <i class="fas fa-search"></i>
+                    </div>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
-                        <i class="bi bi-plus-lg"></i> Add Company
+                        <i class="fas fa-plus"></i>
+                        Add Company
                     </button>
                 </div>
+            </div>
 
-                <!-- Companies Table -->
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Industry</th>
-                                <th>Location</th>
-                                <th>Employees</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="companiesTableBody">
-                            <!-- Companies will be loaded here dynamically -->
-                        </tbody>
-                    </table>
+            <!-- Companies Content -->
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Industry</th>
+                                        <th>Location</th>
+                                        <th>Employees</th>
+                                        <th>Jobs</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="companiesTableBody">
+                                    <!-- Companies will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 
     <!-- Add Company Modal -->
-    <div class="modal fade" id="addCompanyModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Company</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addCompanyForm">
-                        <div class="mb-3">
-                            <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Industry</label>
-                            <input type="text" class="form-control" name="industry">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Location</label>
-                            <input type="text" class="form-control" name="location">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="addCompany()">
-                        <i class="bi bi-plus-lg"></i> Add Company
-                    </button>
-                </div>
+    <div class="modal" id="addCompanyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Company</h3>
+                <button class="close-btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addCompanyForm">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Industry</label>
+                        <input type="text" name="industry" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="location" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" type="submit" form="addCompanyForm">
+                    <i class="fas fa-plus"></i>
+                    Add Company
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Edit Company Modal -->
-    <div class="modal fade" id="editCompanyModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Company</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCompanyForm">
-                        <input type="hidden" id="editCompanyId" name="id">
-                        <div class="mb-3">
-                            <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" id="editCompanyName" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Industry</label>
-                            <input type="text" class="form-control" id="editCompanyIndustry" name="industry">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Location</label>
-                            <input type="text" class="form-control" id="editCompanyLocation" name="location">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="updateCompany()">
-                        <i class="bi bi-pencil"></i> Update Company
-                    </button>
-                </div>
+    <div class="modal" id="editCompanyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Company</h3>
+                <button class="close-btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCompanyForm">
+                    <input type="hidden" id="editCompanyId">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" id="editCompanyName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Industry</label>
+                        <input type="text" id="editCompanyIndustry" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="editCompanyLocation" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" onclick="updateCompany()">
+                    <i class="fas fa-check"></i>
+                    Update Company
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module">
-        import { db, auth } from './js/firebase-config.js';
-        import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js";
+        import { auth } from './js/firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { companyStructure } from './js/firestore-structure.js';
 
         // Check authentication
-        onAuthStateChanged(auth, (user) => {
+        auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // Get user claims to check admin status
+                const idTokenResult = await user.getIdTokenResult(true); // Force token refresh
+                console.log('User claims:', idTokenResult.claims); // Debug claims
+
+                if (!idTokenResult.claims.admin) {
+                    console.log('User is not admin, redirecting...'); // Debug admin status
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Display admin info
+                document.getElementById('adminEmail').textContent = user.email;
+                console.log('Admin email set:', user.email); // Debug email display
+
+                // Load companies after authentication
+                loadCompanies();
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+                showNotification('Error checking admin status: ' + error.message, 'error');
             }
         });
 
-        // Reference to companies collection
-        const companiesRef = collection(db, 'companies');
-
-        // Load and display companies in real-time
-        onSnapshot(companiesRef, (snapshot) => {
-            const companies = [];
-            snapshot.forEach((doc) => {
-                companies.push({ id: doc.id, ...doc.data() });
-            });
-            displayCompanies(companies);
+        // Add event listener for the Add Company button
+        document.querySelector('[data-bs-target="#addCompanyModal"]').addEventListener('click', () => {
+            const modal = document.getElementById('addCompanyModal');
+            modal.style.display = 'block';
         });
+
+        // Add Company form submission
+        window.addCompany = async () => {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('No user logged in');
+                }
+
+                // Force refresh the token before adding company
+                await user.getIdToken(true);
+                
+                const form = document.getElementById('addCompanyForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const formData = new FormData(form);
+                const companyData = Object.fromEntries(formData.entries());
+
+                console.log('Adding company with data:', companyData); // Debug company data
+
+                const result = await companyStructure.addCompany(companyData);
+                console.log('Company added successfully:', result); // Debug success
+
+                const modal = document.getElementById('addCompanyModal');
+                modal.style.display = 'none';
+                form.reset();
+                showNotification('Company added successfully', 'success');
+                loadCompanies(); // Reload the table
+            } catch (error) {
+                console.error('Detailed error adding company:', error); // Debug error
+                showNotification('Error adding company: ' + error.message, 'error');
+                
+                // Additional error information
+                const user = auth.currentUser;
+                if (user) {
+                    const token = await user.getIdTokenResult();
+                    console.log('Current user token claims:', token.claims);
+                }
+            }
+        };
+
+        // Add form submit event listener
+        document.getElementById('addCompanyForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            addCompany();
+        });
+
+        // Load and display companies
+        async function loadCompanies() {
+            try {
+                const companies = await companyStructure.getAllCompanies();
+                displayCompanies(companies);
+            } catch (error) {
+                console.error('Error loading companies:', error);
+                showNotification('Error loading companies: ' + error.message, 'error');
+            }
+        }
 
         // Display companies in table
         function displayCompanies(companies) {
@@ -179,12 +290,19 @@
                     <td>${company.industry || '-'}</td>
                     <td>${company.location || '-'}</td>
                     <td>${company.employees?.length || 0}</td>
+                    <td>${company.jobs?.length || 0}</td>
                     <td>
-                        <button class="btn btn-sm btn-info" onclick="editCompany('${company.id}', '${company.name}', '${company.industry || ''}', '${company.location || ''}')">
-                            <i class="bi bi-pencil"></i>
+                        <span class="status-badge ${company.status}">${company.status}</span>
+                    </td>
+                    <td class="actions">
+                        <button class="btn-icon view" onclick="viewCompanyDetails('${company.id}')" title="View Details">
+                            <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCompany('${company.id}')">
-                            <i class="bi bi-trash"></i>
+                        <button class="btn-icon edit" onclick="editCompany('${company.id}')" title="Edit Company">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete" onclick="deleteCompany('${company.id}')" title="Delete Company">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 `;
@@ -192,70 +310,157 @@
             });
         }
 
-        // Add new company
-        window.addCompany = async () => {
-            const form = document.getElementById('addCompanyForm');
-            const formData = new FormData(form);
-            const companyData = Object.fromEntries(formData.entries());
+        // Search functionality
+        document.getElementById('searchCompanies').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#companiesTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
 
+        // View company details
+        window.viewCompanyDetails = async (companyId) => {
             try {
-                await addDoc(companiesRef, {
-                    ...companyData,
-                    createdAt: new Date(),
-                    employees: []
-                });
-
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addCompanyModal'));
-                modal.hide();
-                form.reset();
+                const company = await companyStructure.getCompanyById(companyId);
+                if (company) {
+                    // Create a detailed view modal
+                    const detailsHTML = `
+                        <div class="company-details">
+                            <h4>${company.name}</h4>
+                            <p><strong>Industry:</strong> ${company.industry || '-'}</p>
+                            <p><strong>Location:</strong> ${company.location || '-'}</p>
+                            <p><strong>Employees:</strong> ${company.employees?.length || 0}</p>
+                            <p><strong>Jobs:</strong> ${company.jobs?.length || 0}</p>
+                            <p><strong>Status:</strong> ${company.status}</p>
+                            <p><strong>Created:</strong> ${new Date(company.createdAt.seconds * 1000).toLocaleDateString()}</p>
+                            <p><strong>Last Updated:</strong> ${new Date(company.updatedAt.seconds * 1000).toLocaleDateString()}</p>
+                        </div>
+                    `;
+                    // Show the details in a modal
+                    showDetailsModal(detailsHTML);
+                }
             } catch (error) {
-                alert('Error adding company: ' + error.message);
+                console.error('Error loading company details:', error);
+                showNotification('Error loading company details: ' + error.message, 'error');
             }
         };
 
         // Delete company
-        window.deleteCompany = async (id) => {
-            if (!confirm('Are you sure you want to delete this company?')) return;
+        window.deleteCompany = async (companyId) => {
+            if (!confirm('Are you sure you want to delete this company? This will affect all related employees and jobs.')) return;
 
             try {
-                await deleteDoc(doc(db, 'companies', id));
+                await companyStructure.deleteCompany(companyId);
+                showNotification('Company deleted successfully', 'success');
+                loadCompanies(); // Reload the table
             } catch (error) {
-                alert('Error deleting company: ' + error.message);
+                console.error('Error deleting company:', error);
+                showNotification('Error deleting company: ' + error.message, 'error');
             }
         };
 
         // Edit company
-        window.editCompany = (id, name, industry, location) => {
-            document.getElementById('editCompanyId').value = id;
-            document.getElementById('editCompanyName').value = name;
-            document.getElementById('editCompanyIndustry').value = industry;
-            document.getElementById('editCompanyLocation').value = location;
-            
-            const modal = new bootstrap.Modal(document.getElementById('editCompanyModal'));
-            modal.show();
+        window.editCompany = async (companyId) => {
+            try {
+                const company = await companyStructure.getCompanyById(companyId);
+                if (company) {
+                    document.getElementById('editCompanyId').value = companyId;
+                    document.getElementById('editCompanyName').value = company.name;
+                    document.getElementById('editCompanyIndustry').value = company.industry || '';
+                    document.getElementById('editCompanyLocation').value = company.location || '';
+                    
+                    const modal = document.getElementById('editCompanyModal');
+                    modal.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading company for edit:', error);
+                showNotification('Error loading company: ' + error.message, 'error');
+            }
         };
 
         // Update company
         window.updateCompany = async () => {
-            const id = document.getElementById('editCompanyId').value;
-            const name = document.getElementById('editCompanyName').value;
-            const industry = document.getElementById('editCompanyIndustry').value;
-            const location = document.getElementById('editCompanyLocation').value;
+            const companyId = document.getElementById('editCompanyId').value;
+            const updateData = {
+                name: document.getElementById('editCompanyName').value,
+                industry: document.getElementById('editCompanyIndustry').value,
+                location: document.getElementById('editCompanyLocation').value
+            };
 
             try {
-                await updateDoc(doc(db, 'companies', id), {
-                    name,
-                    industry,
-                    location,
-                    updatedAt: new Date()
-                });
-
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editCompanyModal'));
-                modal.hide();
+                await companyStructure.updateCompany(companyId, updateData);
+                const modal = document.getElementById('editCompanyModal');
+                modal.style.display = 'none';
+                showNotification('Company updated successfully', 'success');
+                loadCompanies(); // Reload the table
             } catch (error) {
-                alert('Error updating company: ' + error.message);
+                console.error('Error updating company:', error);
+                showNotification('Error updating company: ' + error.message, 'error');
             }
         };
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                showNotification('Error signing out: ' + error.message, 'error');
+            }
+        });
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Show details modal
+        function showDetailsModal(content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Company Details</h3>
+                        <button class="close-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ${content}
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+
+            const closeBtn = modal.querySelector('.close-btn');
+            closeBtn.onclick = () => {
+                modal.remove();
+            };
+        }
+
+        // Modal close buttons
+        document.querySelectorAll('.close-btn, .btn-secondary').forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>

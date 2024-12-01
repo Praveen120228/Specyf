@@ -86,6 +86,9 @@ https://praveen120228.github.io/Specyf/dashboard/admin/settings.html<!DOCTYPE ht
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
+                // Force token refresh to get latest claims
+                await user.getIdToken(true);
+                
                 // Get the ID token result to check admin claim
                 const idTokenResult = await user.getIdTokenResult();
                 
