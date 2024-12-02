@@ -36,9 +36,8 @@ const BYPASS_EMAILS = [
 
 const BYPASS_MODE = true;
 
-// Modify signInWithEmailAndPassword to handle bypass
-const originalSignInWithEmailAndPassword = signInWithEmailAndPassword;
-signInWithEmailAndPassword = async (auth, email, password) => {
+// Wrapper function for authentication
+async function authenticateUser(auth, email, password) {
     // Bypass mode active
     if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
         console.warn('[FIREBASE] AUTHENTICATION BYPASSED - NOT SECURE!');
@@ -54,8 +53,8 @@ signInWithEmailAndPassword = async (auth, email, password) => {
     }
 
     // Original Firebase authentication
-    return originalSignInWithEmailAndPassword(auth, email, password);
-};
+    return signInWithEmailAndPassword(auth, email, password);
+}
 
 // Firebase Initialization with Error Handling
 let app, auth, db;
@@ -144,15 +143,14 @@ const FirebaseAuth = {
         try {
             console.log('[FIREBASE] Attempting sign in:', email);
             
-            // Bypass mode
+            // Use wrapper function for authentication
+            const userCredential = await authenticateUser(auth, email, password);
+            
+            // For bypass mode
             if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
                 const userType = getUserTypeFromEmail(email);
-                
                 return {
-                    user: {
-                        uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
-                        email: email
-                    },
+                    user: userCredential.user,
                     userData: { 
                         userType: userType,
                         email: email
@@ -160,10 +158,7 @@ const FirebaseAuth = {
                 };
             }
 
-            // Original sign-in logic
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            
-            // Fetch user document
+            // For regular authentication
             const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
             
             if (userDoc.exists()) {
