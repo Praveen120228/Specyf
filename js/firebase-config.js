@@ -14,119 +14,79 @@ import {
     getDoc
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-// Firebase Configuration
+// Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBLngjeMo1fJ23WyjpGCzOLsjagJ0V5gvk",
+    apiKey: "AIzaSyBXGGtvn8_Sp5LMaP7TPAyxt8VpcaUwR_0",
     authDomain: "usersdata-6b760.firebaseapp.com",
-    databaseURL: "https://usersdata-6b760.firebaseio.com",
     projectId: "usersdata-6b760",
     storageBucket: "usersdata-6b760.appspot.com",
-    messagingSenderId: "1059253882266",
-    appId: "1:1059253882266:web:9e86e8bd91faabd68abe23"
+    messagingSenderId: "19070397931",
+    appId: "1:19070397931:web:0fdb7e6a0c0a3f4d5e8c7b"
 };
 
-// Authentication bypass configuration
-const BYPASS_EMAILS = [
-    'employee@specyf.com',
-    'company@specyf.com',
-    'startup@specyf.com',
-    'freelancer@specyf.com',
-    'recruitment@specyf.com'
-];
-
-const BYPASS_MODE = true;
-
-// Wrapper function for authentication
-async function authenticateUser(auth, email, password) {
-    // Bypass mode active
-    if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
-        console.warn('[FIREBASE] AUTHENTICATION BYPASSED - NOT SECURE!');
-        
-        // Create a mock user credential
-        return {
-            user: {
-                uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
-                email: email,
-                getIdToken: async () => 'bypass_token'
-            }
-        };
+// Dummy user credentials for testing
+const DUMMY_USERS = {
+    'employee@test.com': {
+        password: 'test123',
+        userType: 'employee',
+        name: 'Test Employee',
+        role: 'Software Developer'
+    },
+    'company@test.com': {
+        password: 'test123',
+        userType: 'company',
+        name: 'Test Company',
+        industry: 'Technology'
+    },
+    'startup@test.com': {
+        password: 'test123',
+        userType: 'startup',
+        name: 'Test Startup',
+        stage: 'Seed'
+    },
+    'freelancer@test.com': {
+        password: 'test123',
+        userType: 'freelancer',
+        name: 'Test Freelancer',
+        skills: ['Web Development', 'UI/UX']
+    },
+    'recruitment@test.com': {
+        password: 'test123',
+        userType: 'recruitment',
+        name: 'Test Recruiter',
+        agency: 'Test Recruitment Agency'
     }
-
-    // Original Firebase authentication
-    return signInWithEmailAndPassword(auth, email, password);
-}
+};
 
 // Firebase Initialization with Error Handling
 let app, auth, db;
 try {
-    // Initialize Firebase
     app = initializeApp(firebaseConfig);
-    
-    // Initialize Authentication
-    auth = getAuth();
-    auth.useDeviceLanguage();
-    
-    // Initialize Firestore
-    db = getFirestore();
-    
-    console.log('Firebase initialized successfully');
+    auth = getAuth(app);
+    db = getFirestore(app);
+    console.log('[FIREBASE] Initialized successfully');
 } catch (error) {
-    console.error('Firebase Initialization Error:', error);
-    console.error('Error details:', error.code, error.message);
-    alert('Failed to initialize Firebase. Please check your configuration.');
-}
-
-// Centralized Error Handler
-function handleFirebaseError(error) {
-    console.error('Firebase Error:', error.code, error.message);
-    
-    const errorMap = {
-        'auth/email-already-in-use': 'Email is already registered',
-        'auth/invalid-email': 'Invalid email address',
-        'auth/operation-not-allowed': 'Operation not allowed',
-        'auth/weak-password': 'Password is too weak',
-        'auth/user-disabled': 'User account has been disabled',
-        'auth/user-not-found': 'No user found with this email',
-        'auth/wrong-password': 'Incorrect password',
-        'auth/configuration-not-found': 'Firebase configuration not found. Please check your setup.'
-    };
-
-    return errorMap[error.code] || error.message || 'An unknown error occurred';
-}
-
-// Helper function to determine user type from email
-function getUserTypeFromEmail(email) {
-    const emailLower = email.toLowerCase();
-    const userTypes = {
-        'employee@specyf.com': 'employee',
-        'company@specyf.com': 'company',
-        'startup@specyf.com': 'startup',
-        'freelancer@specyf.com': 'freelancer',
-        'recruitment@specyf.com': 'recruitment'
-    };
-    
-    return userTypes[emailLower] || 'employee';
+    console.error('[FIREBASE] Initialization error:', error);
 }
 
 // Authentication Service
 const FirebaseAuth = {
     async registerUser(email, password, userData) {
         try {
-            // Bypass registration in bypass mode
-            if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
+            // Check if it's a dummy user
+            if (DUMMY_USERS[email.toLowerCase()]) {
+                console.log('[AUTH] Using dummy user for registration:', email);
                 return {
                     user: {
-                        uid: 'bypass_' + Math.random().toString(36).substr(2, 9),
+                        uid: 'dummy_' + Math.random().toString(36).substr(2, 9),
                         email: email
                     },
-                    userData: userData
+                    userData: { ...DUMMY_USERS[email.toLowerCase()], ...userData }
                 };
             }
 
-            // Original registration logic
+            // Regular Firebase registration
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            
-            // Store additional user data
             await setDoc(doc(db, 'users', userCredential.user.uid), userData);
             
             return {
@@ -134,31 +94,31 @@ const FirebaseAuth = {
                 userData: userData
             };
         } catch (error) {
-            console.error('Registration error:', error);
-            throw handleFirebaseError(error);
+            console.error('[AUTH] Registration error:', error);
+            throw handleAuthError(error);
         }
     },
 
     async signInUser(email, password) {
         try {
-            console.log('[FIREBASE] Attempting sign in:', email);
+            console.log('[AUTH] Attempting sign in:', email);
             
-            // Use wrapper function for authentication
-            const userCredential = await authenticateUser(auth, email, password);
-            
-            // For bypass mode
-            if (BYPASS_MODE && BYPASS_EMAILS.includes(email.toLowerCase())) {
-                const userType = getUserTypeFromEmail(email);
+            // Check for dummy users first
+            const dummyUser = DUMMY_USERS[email.toLowerCase()];
+            if (dummyUser && password === dummyUser.password) {
+                console.log('[AUTH] Dummy user login successful:', email);
                 return {
-                    user: userCredential.user,
-                    userData: { 
-                        userType: userType,
-                        email: email
-                    }
+                    user: {
+                        uid: 'dummy_' + Math.random().toString(36).substr(2, 9),
+                        email: email,
+                        getIdToken: async () => 'dummy_token'
+                    },
+                    userData: dummyUser
                 };
             }
 
-            // For regular authentication
+            // Regular Firebase authentication
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
             
             if (userDoc.exists()) {
@@ -170,37 +130,49 @@ const FirebaseAuth = {
                 throw new Error('User document not found');
             }
         } catch (error) {
-            console.error('[FIREBASE] Sign-in error:', error);
-            throw handleFirebaseError(error);
+            console.error('[AUTH] Sign-in error:', error);
+            throw handleAuthError(error);
         }
     },
 
-    async signOutUser() {
+    async signOut() {
         try {
-            await signOut(auth);
-            return { message: 'Logout successful!' };
+            await auth.signOut();
+            console.log('[AUTH] User signed out successfully');
         } catch (error) {
-            console.error('Logout Error:', error);
-            const userMessage = handleFirebaseError(error);
-            throw new Error(userMessage);
+            console.error('[AUTH] Sign out error:', error);
+            throw error;
         }
-    },
-
-    async getCurrentUser() {
-        return new Promise((resolve, reject) => {
-            const unsubscribe = onAuthStateChanged(auth, (user) => {
-                unsubscribe();
-                resolve(user);
-            }, reject);
-        });
     }
 };
 
-// Export configurations and services
-export { 
-    app, 
-    auth, 
-    db, 
-    FirebaseAuth,
-    handleFirebaseError 
-};
+// Error handling helper
+function handleAuthError(error) {
+    let message = 'An error occurred during authentication.';
+    
+    switch (error.code) {
+        case 'auth/email-already-in-use':
+            message = 'This email is already registered.';
+            break;
+        case 'auth/invalid-email':
+            message = 'Invalid email address.';
+            break;
+        case 'auth/operation-not-allowed':
+            message = 'Email/password accounts are not enabled.';
+            break;
+        case 'auth/weak-password':
+            message = 'Password should be at least 6 characters.';
+            break;
+        case 'auth/user-disabled':
+            message = 'This account has been disabled.';
+            break;
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+            message = 'Invalid email or password.';
+            break;
+    }
+    
+    return new Error(message);
+}
+
+export default FirebaseAuth;
