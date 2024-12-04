@@ -6,6 +6,13 @@
     <title>Specyf - Contact Us</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .contact-section {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDA3OGZmIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3MGUxZmYiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiLz4KPC9zdmc+');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -59,42 +66,25 @@
 
             <div class="contact-form-container">
                 <h2>Send us a Message</h2>
-                <form id="contactForm" class="contact-form" action="https://formsubmit.co/ajax/specyf.contact@gmail.com" method="POST">
-                    <!-- Honeypot -->
-                    <input type="text" name="_honey" style="display: none;">
-                    <!-- Disable Captcha -->
-                    <input type="hidden" name="_captcha" value="false">
-                    <!-- Success Page -->
-                    <input type="hidden" name="_next" value="https://praveen120228.github.io/Specyf/thanks.html">
-                    <!-- Disable all FormSubmit pages -->
-                    <input type="hidden" name="_template" value="none">
-                    <!-- Prevent any FormSubmit redirects -->
-                    <input type="hidden" name="_autoresponse" value="Your message has been received">
+                <form id="contactForm" class="contact-form">
                     <div class="form-group">
-                        <label for="name">Full Name *</label>
-                        <input type="text" id="name" name="name" required>
-                        <span class="error-message" id="nameError"></span>
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required minlength="2" maxlength="50">
                     </div>
-
                     <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required>
-                        <span class="error-message" id="emailError"></span>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                     </div>
-
                     <div class="form-group">
-                        <label for="subject">Subject *</label>
-                        <input type="text" id="subject" name="subject" required>
-                        <span class="error-message" id="subjectError"></span>
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-control" required minlength="5" maxlength="100">
                     </div>
-
                     <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                        <span class="error-message" id="messageError"></span>
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" class="form-control" required minlength="10" maxlength="500" rows="5"></textarea>
                     </div>
-
-                    <button type="submit" class="submit-btn">Send Message</button>
+                    <div id="formFeedback" class="alert" style="display:none;"></div>
+                    <button type="submit" class="btn btn-primary" id="submitButton">Send Message</button>
                 </form>
             </div>
         </section>

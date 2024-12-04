@@ -1,0 +1,26 @@
+{
+  "name": "specyf-contact-functions",
+  "description": "Cloud Functions for Specyf contact form",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "firebase-admin": "^11.11.0",
+    "firebase-functions": "^4.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0"
+  },
+  "private": true
+}

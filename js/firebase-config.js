@@ -148,31 +148,44 @@ const FirebaseAuth = {
 
 // Error handling helper
 function handleAuthError(error) {
+    // Default error message
     let message = 'An error occurred during authentication.';
     
-    switch (error.code) {
-        case 'auth/email-already-in-use':
-            message = 'This email is already registered.';
-            break;
-        case 'auth/invalid-email':
-            message = 'Invalid email address.';
-            break;
-        case 'auth/operation-not-allowed':
-            message = 'Email/password accounts are not enabled.';
-            break;
-        case 'auth/weak-password':
-            message = 'Password should be at least 6 characters.';
-            break;
-        case 'auth/user-disabled':
-            message = 'This account has been disabled.';
-            break;
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-            message = 'Invalid email or password.';
-            break;
+    // Check if error is a Firebase Auth error with code
+    if (error && error.code) {
+        switch (error.code) {
+            case 'auth/email-already-in-use':
+                message = 'This email is already registered.';
+                break;
+            case 'auth/invalid-email':
+                message = 'Invalid email address.';
+                break;
+            case 'auth/operation-not-allowed':
+                message = 'Email/password accounts are not enabled.';
+                break;
+            case 'auth/weak-password':
+                message = 'Password should be at least 6 characters.';
+                break;
+            case 'auth/user-disabled':
+                message = 'This account has been disabled.';
+                break;
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+                message = 'Invalid email or password.';
+                break;
+            default:
+                // If it's a Firebase error but not one we explicitly handle
+                message = error.message || 'Authentication error occurred.';
+        }
+    } else if (error && error.message) {
+        // If it's a regular error with a message
+        message = error.message;
     }
     
-    return new Error(message);
+    // Create and return an error object
+    const authError = new Error(message);
+    authError.code = error?.code || 'auth/unknown';
+    return authError;
 }
 
 export default FirebaseAuth;
