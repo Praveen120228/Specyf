@@ -8,7 +8,6 @@
     <!-- Preload critical assets -->
     <link rel="preload" href="css/style.css" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
-    <link rel="preload" href="js/performance-tracker.js" as="script">
     
     <!-- Critical CSS -->
     <style>
@@ -51,22 +50,6 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/favicon.png">
-    
-    <!-- Performance Debug Styles -->
-    <style>
-        #performance-insights {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 9999;
-            max-width: 300px;
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <!-- Header Section -->
@@ -193,33 +176,6 @@
         </div>
     </footer>
 
-    <!-- Performance Insights Display -->
-    <div id="performance-insights"></div>
-
-    <script type="module">
-        import performanceTracker from './js/performance-tracker.js';
-        
-        window.addEventListener('load', () => {
-            const metrics = performanceTracker.getMetrics();
-            const insights = performanceTracker.getPerformanceInsights();
-            
-            console.log('Page Performance Metrics:', metrics);
-            
-            // Display performance insights if any
-            const insightsContainer = document.getElementById('performance-insights');
-            if (insights.length > 0) {
-                insightsContainer.innerHTML = `
-                    <h4>Performance Insights</h4>
-                    <ul>
-                        ${insights.map(insight => `<li>${insight}</li>`).join('')}
-                    </ul>
-                `;
-                insightsContainer.style.display = 'block';
-            }
-        });
-    </script>
-    
-    <script type="module" src="js/performance-tracker.js" async defer></script>
     <script src="js/main.js"></script>
 </body>
 </html>
