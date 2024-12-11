@@ -17,42 +17,152 @@
         </nav>
     </header>
 
-    <main class="dashboard-container">
-        <section class="dashboard-overview">
-            <h1>Welcome, <span id="freelancer-name"></span></h1>
-            
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <i class="fas fa-briefcase"></i>
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>Freelancer Dashboard</h1>
+                <p class="last-updated">Last updated: <span id="last-updated-time"></span></p>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search projects..." id="dashboard-search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="notifications">
+                    <button class="notification-btn" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-count">0</span>
+                    </button>
+                </div>
+                <div id="user-profile" class="user-profile">
+                    <img src="../assets/default-avatar.png" alt="Profile" class="profile-img">
+                    <span class="profile-name">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="stat-content">
                     <h3>Active Projects</h3>
-                    <p id="active-projects">0</p>
+                    <p class="stat-number" id="active-projects">0</p>
+                    <p class="stat-change positive">2 in progress</p>
                 </div>
-                <div class="stat-card">
-                    <i class="fas fa-dollar-sign"></i>
-                    <h3>Total Earnings</h3>
-                    <p id="total-earnings">$0</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
                 </div>
-                <div class="stat-card">
+                <div class="stat-content">
+                    <h3>Earnings</h3>
+                    <p class="stat-number" id="total-earnings">$0</p>
+                    <p class="stat-change positive">+25% this month</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-star"></i>
-                    <h3>Client Rating</h3>
-                    <p id="client-rating">0.0</p>
+                </div>
+                <div class="stat-content">
+                    <h3>Rating</h3>
+                    <p class="stat-number" id="rating">4.8</p>
+                    <p class="stat-change neutral">15 reviews</p>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="skills-profile">
-            <h2>Your Skills</h2>
-            <div class="skills-list" id="skills-container">
-                <!-- Skills will be dynamically populated -->
+        <section class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Project Opportunities</h3>
+                    <div class="card-actions">
+                        <button class="refresh-btn" aria-label="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <select class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="web">Web Development</option>
+                            <option value="mobile">Mobile Apps</option>
+                            <option value="design">Design</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="project-opportunities" class="card-content">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
             </div>
-        </section>
 
-        <section class="quick-actions">
-            <h2>Quick Actions</h2>
-            <div class="action-buttons">
-                <button class="btn btn-primary">Find New Projects</button>
-                <button class="btn btn-secondary">Update Portfolio</button>
-                <button class="btn btn-tertiary">Track Invoices</button>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Earnings Overview</h3>
+                    <select id="time-range" class="time-range-select">
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                    </select>
+                </div>
+                <div id="earnings-chart" class="chart-container">
+                    <!-- Chart will be rendered here -->
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Active Projects</h3>
+                    <button class="view-all-btn">View All Projects</button>
+                </div>
+                <div id="active-projects-list" class="projects-list">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Client Reviews</h3>
+                    <button class="view-all-btn">View All Reviews</button>
+                </div>
+                <div id="client-reviews" class="reviews-grid">
+                    <div class="review-item">
+                        <div class="review-header">
+                            <img src="../assets/default-avatar.png" alt="Client" class="client-img">
+                            <div class="review-info">
+                                <h4>John Smith</h4>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="review-text">"Excellent work and great communication throughout the project."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Skills & Expertise</h3>
+                    <button class="edit-btn">
+                        <i class="fas fa-edit"></i> Update Skills
+                    </button>
+                </div>
+                <div id="skills-expertise" class="skills-cloud">
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">UI/UX Design</span>
+                    <span class="skill-tag">API Development</span>
+                </div>
             </div>
         </section>
     </main>

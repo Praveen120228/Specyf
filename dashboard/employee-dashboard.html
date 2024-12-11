@@ -64,52 +64,130 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="dashboard-header">
-                <h1>Employee Dashboard</h1>
-                <div id="user-profile" class="user-profile"></div>
+                <div class="header-left">
+                    <h1>Employee Dashboard</h1>
+                    <p class="last-updated">Last updated: <span id="last-updated-time"></span></p>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search jobs..." id="dashboard-search">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="notifications">
+                        <button class="notification-btn" aria-label="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notification-count">0</span>
+                        </button>
+                    </div>
+                    <div id="user-profile" class="user-profile">
+                        <img src="../assets/default-avatar.png" alt="Profile" class="profile-img">
+                        <span class="profile-name" id="user-name">Loading...</span>
+                        <span class="profile-email" id="user-email"></span>
+                    </div>
+                </div>
             </header>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Applications Sent</h3>
+                        <p class="stat-number" id="applications-count">0</p>
+                        <p class="stat-change positive">+3 this week</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Profile Views</h3>
+                        <p class="stat-number" id="profile-views">0</p>
+                        <p class="stat-change positive">+15% this month</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Interviews</h3>
+                        <p class="stat-number" id="interview-count">0</p>
+                        <p class="stat-change neutral">2 upcoming</p>
+                    </div>
+                </div>
+            </div>
 
             <section class="dashboard-cards">
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Job Recommendations</h3>
-                        <i class="fas fa-briefcase card-icon"></i>
+                        <h3>Recommended Jobs</h3>
+                        <div class="card-actions">
+                            <button class="refresh-btn" aria-label="Refresh">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div id="job-recommendations">
-                        <!-- Dynamic job recommendations will be loaded here -->
-                        <p>Loading recommendations...</p>
-                    </div>
-                    <div class="quick-actions">
-                        <button class="quick-action-btn">View All Jobs</button>
+                    <div id="recommended-jobs" class="card-content">
+                        <div class="loading-skeleton"></div>
+                        <div class="loading-skeleton"></div>
+                        <div class="loading-skeleton"></div>
                     </div>
                 </div>
 
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3>Application Status</h3>
-                        <i class="fas fa-chart-pie card-icon"></i>
+                        <select id="time-range" class="time-range-select">
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                        </select>
                     </div>
-                    <div id="application-status">
-                        <!-- Dynamic application status will be loaded here -->
-                        <p>Loading status...</p>
-                    </div>
-                    <div class="quick-actions">
-                        <button class="quick-action-btn">Manage Applications</button>
+                    <div id="applications-chart" class="chart-container">
+                        <!-- Chart will be rendered here -->
                     </div>
                 </div>
 
                 <div class="dashboard-card">
                     <div class="card-header">
-                        <h3>Profile Completeness</h3>
-                        <i class="fas fa-user-check card-icon"></i>
+                        <h3>Upcoming Interviews</h3>
+                        <button class="calendar-sync-btn">
+                            <i class="fas fa-calendar-alt"></i> Sync Calendar
+                        </button>
                     </div>
-                    <div id="profile-completeness">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 65%;"></div>
+                    <div id="upcoming-interviews" class="interviews-list">
+                        <div class="loading-skeleton"></div>
+                        <div class="loading-skeleton"></div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Skills Assessment</h3>
+                        <button class="view-all-btn">View All Skills</button>
+                    </div>
+                    <div id="skills-assessment" class="skills-grid">
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <h4>Technical Skills</h4>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 85%"></div>
+                                </div>
+                            </div>
                         </div>
-                        <p>65% Complete</p>
-                    </div>
-                    <div class="quick-actions">
-                        <button class="quick-action-btn">Update Profile</button>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <h4>Soft Skills</h4>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -119,45 +197,29 @@
     <script type="module">
         import authService from '../js/auth-service.js';
 
-        async function initializeDashboard() {
-            try {
-                // Get current user data
-                const userData = await authService.getCurrentUserData();
-                if (!userData) {
-                    console.error('No user data found');
-                    return;
-                }
-
-                // Update UI with user data
-                document.getElementById('user-profile').innerHTML = `
-                    <span id="user-email">${userData.email}</span>
-                    <button id="logout-button" class="btn btn-outline-danger">Logout</button>
-                `;
-
-            } catch (error) {
-                console.error('Dashboard initialization error:', error);
-                alert('Error loading dashboard. Please try logging in again.');
-            }
+        // Check authentication
+        if (!authService.isAuthenticated()) {
+            window.location.href = '../login.html';
         }
 
-        // Setup logout functionality
-        function setupLogout() {
-            const logoutButton = document.getElementById('logout-button');
-            logoutButton.addEventListener('click', async () => {
-                try {
-                    await authService.signOut();
-                } catch (error) {
-                    console.error('Logout error:', error);
-                    alert('Error during logout. Please try again.');
-                }
-            });
+        // Get user data
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.userType !== 'employee') {
+            window.location.href = '../login.html';
         }
 
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeDashboard();
-            setupLogout();
+        // Update user info
+        document.getElementById('user-name').textContent = user.name || 'Employee';
+        document.getElementById('user-email').textContent = user.email;
+
+        // Handle logout
+        document.getElementById('sign-out-btn').addEventListener('click', () => {
+            authService.logout();
         });
+
+        // Update last updated time
+        const now = new Date();
+        document.getElementById('last-updated-time').textContent = now.toLocaleString();
     </script>
 </body>
 </html>

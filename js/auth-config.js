@@ -1,12 +1,3 @@
-// Secure Authentication Module with Local Storage
-import { 
-    app, 
-    auth, 
-    db, 
-    FirebaseAuth,
-    handleFirebaseError 
-} from './firebase-config.js';
-
 // Base URL for GitHub Pages
 const BASE_URL = '/Specyf';
 
@@ -28,22 +19,6 @@ const LoginValidationService = {
     validateLoginCredentials(email, password) {
         this.validateEmail(email);
         this.validatePassword(password);
-    }
-};
-
-// Signup Validation Service
-const SignupValidationService = {
-    validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            throw new Error('Invalid email format');
-        }
-    },
-
-    validatePassword(password) {
-        if (!password || password.length < 8) {
-            throw new Error('Password must be at least 8 characters');
-        }
     },
 
     validateFullName(name) {
@@ -53,48 +28,29 @@ const SignupValidationService = {
     },
 
     validateSignupData(data) {
-        const errors = {};
+        const { email, password, fullName, userType } = data;
         
-        // Validate user type
-        if (!data.userType) {
-            errors.userType = 'Please select a user type';
-        }
-
-        // Validate full name
-        try {
-            this.validateFullName(data.fullName);
-        } catch (error) {
-            errors.fullName = error.message;
+        // Basic validation
+        if (!email || !password || !fullName || !userType) {
+            throw new Error('All fields are required');
         }
 
         // Validate email
-        try {
-            this.validateEmail(data.email);
-        } catch (error) {
-            errors.email = error.message;
-        }
+        this.validateEmail(email);
 
         // Validate password
-        try {
-            this.validatePassword(data.password);
-        } catch (error) {
-            errors.password = error.message;
+        this.validatePassword(password);
+
+        // Validate full name
+        this.validateFullName(fullName);
+
+        // Validate user type
+        const validUserTypes = ['employee', 'company', 'startup', 'freelancer', 'recruitment'];
+        if (!validUserTypes.includes(userType.toLowerCase())) {
+            throw new Error('Invalid user type');
         }
 
-        // Validate password confirmation
-        if (data.password !== data.confirmPassword) {
-            errors.confirmPassword = 'Passwords do not match';
-        }
-
-        // Validate terms agreement
-        if (!data.termsAgreed) {
-            errors.terms = 'You must agree to the terms and conditions';
-        }
-
-        return {
-            isValid: Object.keys(errors).length === 0,
-            errors
-        };
+        return true;
     }
 };
 
@@ -102,25 +58,50 @@ const SignupValidationService = {
 async function handleLoginSubmission(event) {
     event.preventDefault();
     
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     const loginError = document.getElementById('login-error');
+    const loginButton = event.target.querySelector('button[type="submit"]');
 
     try {
-        // Validate credentials
-        LoginValidationService.validateLoginCredentials(emailInput.value, passwordInput.value);
-
-        // Attempt login with Firebase
-        const result = await FirebaseAuth.signInUser(emailInput.value, passwordInput.value);
+        // Disable login button
+        loginButton.disabled = true;
+        loginButton.innerHTML = 'Logging in...';
         
-        // Redirect based on user type
-        const userType = result.userData?.userType || 'default';
-        window.location.href = `${BASE_URL}/dashboard/${userType}-dashboard.html`;
+        // Clear previous errors
+        loginError.textContent = '';
+        
+        // Validate credentials
+        LoginValidationService.validateLoginCredentials(email, password);
+        
+        // Call auth service to login
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Login failed');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // Redirect to appropriate dashboard
+        const dashboardPath = `/dashboard/${data.user.type.toLowerCase()}-dashboard.html`;
+        window.location.href = dashboardPath;
 
     } catch (error) {
         loginError.textContent = error.message;
-        loginError.style.color = 'red';
-        console.error('Login Error:', error);
+        console.error('Login error:', error);
+    } finally {
+        loginButton.disabled = false;
+        loginButton.innerHTML = 'Login';
     }
 }
 
@@ -128,46 +109,55 @@ async function handleLoginSubmission(event) {
 async function handleSignupSubmission(event) {
     event.preventDefault();
     
-    const form = event.target;
-    const userTypeSelect = document.getElementById('user-type');
-    const fullNameInput = document.getElementById('full-name');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const termsCheckbox = document.getElementById('terms');
-    const signupError = document.getElementById('signup-error');
-
-    const signupData = {
-        userType: userTypeSelect.value,
-        fullName: fullNameInput.value,
-        email: emailInput.value,
-        password: passwordInput.value,
-        confirmPassword: confirmPasswordInput.value,
-        termsAgreed: termsCheckbox.checked
+    const formData = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        fullName: document.getElementById('fullName').value,
+        userType: document.querySelector('input[name="userType"]:checked')?.value
     };
+    
+    const signupError = document.getElementById('signup-error');
+    const signupButton = event.target.querySelector('button[type="submit"]');
 
     try {
-        // Validate signup data
-        const validation = SignupValidationService.validateSignupData(signupData);
+        // Disable signup button
+        signupButton.disabled = true;
+        signupButton.innerHTML = 'Creating Account...';
         
-        if (!validation.isValid) {
-            const firstError = Object.values(validation.errors)[0];
-            throw new Error(firstError);
-        }
-
-        // Register user with Firebase
-        const result = await FirebaseAuth.registerUser(signupData.email, signupData.password, {
-            userType: signupData.userType,
-            fullName: signupData.fullName
+        // Clear previous errors
+        signupError.textContent = '';
+        
+        // Validate signup data
+        LoginValidationService.validateSignupData(formData);
+        
+        // Call auth service to register
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
         });
 
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Registration failed');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
         // Redirect to appropriate dashboard
-        window.location.href = `${BASE_URL}/dashboard/${signupData.userType}-dashboard.html`;
+        const dashboardPath = `/dashboard/${data.user.type.toLowerCase()}-dashboard.html`;
+        window.location.href = dashboardPath;
 
     } catch (error) {
         signupError.textContent = error.message;
-        signupError.style.color = 'red';
-        console.error('Signup Error:', error);
+        console.error('Signup error:', error);
+    } finally {
+        signupButton.disabled = false;
+        signupButton.innerHTML = 'Create Account';
     }
 }
 
@@ -178,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', handleLoginSubmission);
     }
-
+    
     // Setup signup form
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
@@ -186,5 +176,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Export the handler functions
-export { handleLoginSubmission, handleSignupSubmission };
+export { LoginValidationService, handleLoginSubmission, handleSignupSubmission };

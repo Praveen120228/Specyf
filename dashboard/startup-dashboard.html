@@ -6,6 +6,10 @@
     <title>Startup Founder Dashboard - Specyf</title>
     <link rel="stylesheet" href="../css/style.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Auth Dependencies -->
+    <script type="module" src="../js/auth-service.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
 </head>
 <body>
     <header>
@@ -17,53 +21,118 @@
         </nav>
     </header>
 
-    <main class="dashboard-container">
-        <section class="dashboard-overview">
-            <h1>Welcome, <span id="founder-name"></span></h1>
-            
-            <div class="dashboard-stats">
-                <div class="stat-card">
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>Startup Founder Dashboard</h1>
+                <p class="last-updated">Last updated: <span id="last-updated-time"></span></p>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search projects..." id="dashboard-search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="notifications">
+                    <button class="notification-btn" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-count">0</span>
+                    </button>
+                </div>
+                <div id="user-profile" class="user-profile">
+                    <img src="../assets/default-avatar.png" alt="Profile" class="profile-img">
+                    <span class="profile-name">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-rocket"></i>
+                </div>
+                <div class="stat-content">
                     <h3>Funding Rounds</h3>
-                    <p id="funding-rounds">0</p>
+                    <p class="stat-number" id="funding-rounds">0</p>
+                    <p class="stat-change positive">+1 this month</p>
                 </div>
-                <div class="stat-card">
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
                     <h3>Team Members</h3>
-                    <p id="team-members">0</p>
+                    <p class="stat-number" id="team-members">0</p>
+                    <p class="stat-change neutral">5 active</p>
                 </div>
-                <div class="stat-card">
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
                     <h3>Startup Growth</h3>
-                    <p id="startup-growth">0%</p>
+                    <p class="stat-number" id="startup-growth">0%</p>
+                    <p class="stat-change positive">+10% this quarter</p>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="startup-details">
-            <h2>Startup Profile</h2>
-            <div class="profile-details">
-                <div class="profile-field">
-                    <strong>Company Name:</strong>
-                    <span id="company-name"></span>
+        <section class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Project Opportunities</h3>
+                    <div class="card-actions">
+                        <button class="refresh-btn" aria-label="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="profile-field">
-                    <strong>Industry:</strong>
-                    <span id="industry"></span>
-                </div>
-                <div class="profile-field">
-                    <strong>Founded:</strong>
-                    <span id="founded-date"></span>
+                <div id="project-opportunities" class="card-content">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
                 </div>
             </div>
-        </section>
 
-        <section class="quick-actions">
-            <h2>Quick Actions</h2>
-            <div class="action-buttons">
-                <button class="btn btn-primary">Post Job Opening</button>
-                <button class="btn btn-secondary">Find Talent</button>
-                <button class="btn btn-tertiary">Update Company Profile</button>
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Financial Overview</h3>
+                    <select id="time-range" class="time-range-select">
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                    </select>
+                </div>
+                <div id="financial-chart" class="chart-container">
+                    <!-- Chart will be rendered here -->
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Team Management</h3>
+                    <button class="view-all-btn">View All Members</button>
+                </div>
+                <div id="team-list" class="team-list">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Upcoming Meetings</h3>
+                    <button class="calendar-sync-btn">
+                        <i class="fas fa-calendar-alt"></i> Sync Calendar
+                    </button>
+                </div>
+                <div id="upcoming-meetings" class="meetings-list">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
             </div>
         </section>
     </main>

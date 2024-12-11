@@ -17,42 +17,161 @@
         </nav>
     </header>
 
-    <main class="dashboard-container">
-        <section class="dashboard-overview">
-            <h1>Welcome, <span id="agency-name"></span></h1>
-            
-            <div class="dashboard-stats">
-                <div class="stat-card">
+    <main class="main-content">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>Recruitment Dashboard</h1>
+                <p class="last-updated">Last updated: <span id="last-updated-time"></span></p>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search candidates..." id="dashboard-search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="notifications">
+                    <button class="notification-btn" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-count">0</span>
+                    </button>
+                </div>
+                <div id="user-profile" class="user-profile">
+                    <img src="../assets/default-avatar.png" alt="Profile" class="profile-img">
+                    <span class="profile-name">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-users"></i>
-                    <h3>Candidates Placed</h3>
-                    <p id="candidates-placed">0</p>
                 </div>
-                <div class="stat-card">
-                    <i class="fas fa-building"></i>
-                    <h3>Client Companies</h3>
-                    <p id="client-companies">0</p>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-chart-pie"></i>
-                    <h3>Placement Rate</h3>
-                    <p id="placement-rate">0%</p>
+                <div class="stat-content">
+                    <h3>Active Candidates</h3>
+                    <p class="stat-number" id="active-candidates">0</p>
+                    <p class="stat-change positive">+8 this week</p>
                 </div>
             </div>
-        </section>
-
-        <section class="job-listings">
-            <h2>Active Job Listings</h2>
-            <div class="job-list" id="job-listings-container">
-                <!-- Job listings will be dynamically populated -->
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Open Positions</h3>
+                    <p class="stat-number" id="open-positions">0</p>
+                    <p class="stat-change neutral">5 urgent</p>
+                </div>
             </div>
-        </section>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Placements</h3>
+                    <p class="stat-number" id="placements">0</p>
+                    <p class="stat-change positive">+3 this month</p>
+                </div>
+            </div>
+        </div>
 
-        <section class="quick-actions">
-            <h2>Quick Actions</h2>
-            <div class="action-buttons">
-                <button class="btn btn-primary">Post New Job</button>
-                <button class="btn btn-secondary">Search Candidates</button>
-                <button class="btn btn-tertiary">Manage Clients</button>
+        <section class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Candidate Pipeline</h3>
+                    <div class="card-actions">
+                        <button class="refresh-btn" aria-label="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <select class="filter-select">
+                            <option value="all">All Stages</option>
+                            <option value="screening">Screening</option>
+                            <option value="interview">Interview</option>
+                            <option value="offer">Offer</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="candidate-pipeline" class="pipeline-container">
+                    <div class="pipeline-stage">
+                        <h4>Screening</h4>
+                        <div class="candidate-list">
+                            <div class="loading-skeleton"></div>
+                            <div class="loading-skeleton"></div>
+                        </div>
+                    </div>
+                    <div class="pipeline-stage">
+                        <h4>Interview</h4>
+                        <div class="candidate-list">
+                            <div class="loading-skeleton"></div>
+                        </div>
+                    </div>
+                    <div class="pipeline-stage">
+                        <h4>Offer</h4>
+                        <div class="candidate-list">
+                            <div class="loading-skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Recruitment Analytics</h3>
+                    <select id="time-range" class="time-range-select">
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                    </select>
+                </div>
+                <div id="recruitment-chart" class="chart-container">
+                    <!-- Chart will be rendered here -->
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Upcoming Interviews</h3>
+                    <button class="calendar-sync-btn">
+                        <i class="fas fa-calendar-alt"></i> Sync Calendar
+                    </button>
+                </div>
+                <div id="upcoming-interviews" class="interviews-list">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Job Requisitions</h3>
+                    <button class="quick-action-btn">
+                        <i class="fas fa-plus"></i> New Requisition
+                    </button>
+                </div>
+                <div id="job-requisitions" class="requisitions-list">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3>Talent Pool</h3>
+                    <div class="card-actions">
+                        <button class="import-btn">
+                            <i class="fas fa-file-import"></i> Import
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div id="talent-pool" class="talent-grid">
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                    <div class="loading-skeleton"></div>
+                </div>
             </div>
         </section>
     </main>

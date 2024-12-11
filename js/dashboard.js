@@ -10,56 +10,51 @@ class DashboardManager {
         try {
             // Ensure user is authenticated
             if (!authService.isAuthenticated()) {
-                window.location.href = '/login.html';
+                window.location.href = '../login.html';
                 return;
             }
 
-            // Get current user data
-            const userData = await authService.getCurrentUserData();
+            // Get user data from local storage
+            const userData = JSON.parse(localStorage.getItem('user'));
             if (!userData) {
-                console.error('Failed to retrieve user data');
+                console.error('No user data found');
+                window.location.href = '../login.html';
                 return;
             }
 
             this.setupUserProfile(userData);
             this.setupSidebar();
             this.setupQuickActions();
+            this.setupEventListeners();
+            await this.loadDashboardData();
         } catch (error) {
             console.error('Dashboard initialization error:', error);
-            authService.signOut();
+            authService.logout();
         }
     }
 
     setupUserProfile(userData) {
         const profileContainer = document.getElementById('user-profile');
         if (profileContainer) {
+            const userName = userData.name || userData.email.split('@')[0];
             profileContainer.innerHTML = `
-                <img src="${userData.photoURL || 'assets/default-avatar.png'}" 
+                <img src="../assets/default-avatar.png" 
                      alt="Profile" 
                      class="user-profile-img">
                 <div>
-                    <h3>${userData.fullName || 'User'}</h3>
-                    <p>${userData.userType || 'User Type'}</p>
+                    <h3>${userName}</h3>
+                    <p>${userData.userType}</p>
                 </div>
             `;
         }
     }
 
     setupSidebar() {
-        const sidebar = document.querySelector('.sidebar');
+        // Toggle sidebar on mobile
         const sidebarToggle = document.querySelector('.sidebar-toggle');
-        const navLinks = document.querySelectorAll('.sidebar-nav a');
-
-        // Highlight current page
-        const currentPath = window.location.pathname;
-        navLinks.forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
-                link.classList.add('active');
-            }
-        });
-
-        // Sidebar toggle functionality
-        if (sidebarToggle) {
+        const sidebar = document.querySelector('.sidebar');
+        
+        if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('collapsed');
             });
@@ -67,15 +62,49 @@ class DashboardManager {
     }
 
     setupQuickActions() {
-        const signOutBtn = document.getElementById('sign-out-btn');
-        if (signOutBtn) {
-            signOutBtn.addEventListener('click', async () => {
-                try {
-                    await authService.signOut();
-                } catch (error) {
-                    console.error('Sign out error:', error);
+        const quickActionsContainer = document.querySelector('.quick-actions');
+        if (quickActionsContainer) {
+            quickActionsContainer.addEventListener('click', (e) => {
+                const action = e.target.closest('.action-card');
+                if (action) {
+                    const actionType = action.dataset.action;
+                    this.handleQuickAction(actionType);
                 }
             });
+        }
+    }
+
+    setupEventListeners() {
+        // Logout button
+        const logoutBtn = document.getElementById('sign-out-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                authService.logout();
+            });
+        }
+    }
+
+    async loadDashboardData() {
+        // Simulate loading dashboard data
+        const dashboardCards = document.querySelectorAll('.dashboard-card');
+        dashboardCards.forEach(card => {
+            card.classList.remove('loading');
+        });
+    }
+
+    handleQuickAction(actionType) {
+        switch(actionType) {
+            case 'profile':
+                window.location.href = 'profile.html';
+                break;
+            case 'messages':
+                window.location.href = 'messages.html';
+                break;
+            case 'settings':
+                window.location.href = 'settings.html';
+                break;
+            default:
+                console.log('Unknown action:', actionType);
         }
     }
 }
@@ -84,5 +113,3 @@ class DashboardManager {
 document.addEventListener('DOMContentLoaded', () => {
     new DashboardManager();
 });
-
-export default DashboardManager;
